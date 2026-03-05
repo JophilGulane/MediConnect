@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Pending — MediConnect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center">
+    <div class="mc-card p-12 max-w-lg text-center">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-6"
+            style="background: linear-gradient(135deg, #F5A623, #FF6B6B);">
+            <i class="fa-solid fa-clock"></i>
+        </div>
+        <h1 class="text-2xl font-bold mb-3" style="font-family:'Sora',sans-serif;">Pending Approval</h1>
+        <p class="mb-6" style="color:#4A6785;">
+            Your doctor account has been created. Our team will review your credentials and approve your account
+            shortly.
+            You'll be able to log in and access your dashboard once approved.
+        </p>
+        <div class="p-4 rounded-2xl text-sm mb-6" style="background:#F0F4F9; color:#4A6785;">
+            <i class="fa-solid fa-info-circle text-blue-500 mr-2"></i>
+            If you haven't heard back within 48 hours, please contact support.
+        </div>
+        <a href="/" class="btn-secondary">
+            <i class="fa-solid fa-house"></i> Return Home
+        </a>
+    </div>
+</div>
+{% endblock %}

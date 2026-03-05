@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Downloading Prescription…{% endblock %}
+{% block content %}
+<div class="text-center py-20">
+    <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-6"
+        style="background:linear-gradient(135deg,#0A6EBD,#00C9A7);">
+        <i class="fa-solid fa-download"></i>
+    </div>
+    <h2 class="text-2xl font-bold mb-2" style="font-family:'Sora',sans-serif;">Your download has started.</h2>
+    <p class="mb-6" style="color:#4A6785;">If it didn't start automatically, <a href="{{ download_url }}"
+            style="color:#0A6EBD;">click here</a>.</p>
+    <a href="/dashboard/" class="btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

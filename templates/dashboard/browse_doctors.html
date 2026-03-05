@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Browse Doctors — MediConnect{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold mb-1" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Find a Doctor</h1>
+    <p class="text-sm" style="color:#4A6785;">Browse verified doctors and start a consultation.</p>
+</div>
+
+<!-- Filters -->
+<div class="glass-card p-5 mb-8 flex flex-wrap gap-4 items-end">
+    <form method="get" class="flex flex-wrap gap-4 items-end w-full">
+        <div class="flex-1 min-w-48">
+            <label class="mc-label">Specialty</label>
+            <select name="specialty" class="mc-select">
+                <option value="">All Specialties</option>
+                {% for val, label in specialty_choices %}
+                <option value="{{ val }}" {% if specialty_filter==val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex-1 min-w-48">
+            <label class="mc-label">Availability</label>
+            <select name="status" class="mc-select">
+                <option value="">Any Status</option>
+                <option value="online" {% if status_filter=='online' %}selected{% endif %}>Online</option>
+                <option value="busy" {% if status_filter=='busy' %}selected{% endif %}>Busy</option>
+                <option value="offline" {% if status_filter=='offline' %}selected{% endif %}>Offline</option>
+            </select>
+        </div>
+        <button type="submit" class="btn-primary px-6 py-3">
+            <i class="fa-solid fa-magnifying-glass"></i> Filter
+        </button>
+        {% if specialty_filter or status_filter %}
+        <a href="/dashboard/patient/doctors/" class="btn-secondary px-6 py-3">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Doctor Grid -->
+{% if page_obj %}
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    {% for doctor in page_obj %}
+    <div class="mc-card overflow-hidden animate-on-scroll" data-stagger>
+        <!-- Card header bar -->
+        <div class="h-20 relative" style="background: linear-gradient(135deg, #0A6EBD, #00C9A7);">
+            <!-- Avatar overlapping -->
+            <div class="w-16 h-16 rounded-2xl border-4 border-white flex items-center justify-center text-white text-xl font-bold absolute -bottom-8 left-6"
+                style="background: linear-gradient(135deg, #064F8C, #0A6EBD);">
+                {% if doctor.user.profile_picture %}
+                <img src="{{ doctor.user.profile_picture.url }}" class="w-full h-full object-cover rounded-2xl" alt="">
+                {% else %}
+                {{ doctor.user.get_initials }}
+                {% endif %}
+            </div>
+            <!-- Availability badge -->
+            <div class="absolute top-3 right-3">
+                <span class="status-badge badge-{{ doctor.availability_status }}">
+                    {% if doctor.availability_status == 'online' %}<span class="pulse-dot"></span>{% endif %}
+                    {{ doctor.get_availability_status_display }}
+                </span>
+            </div>
+        </div>
+
+        <div class="p-5 pt-12">
+            <h3 class="text-base font-bold mb-1" style="font-family:'Sora',sans-serif; color:#0D1B2A;">
+                Dr. {{ doctor.user.get_full_name }}
+            </h3>
+            <p class="text-sm mb-3" style="color:#4A6785;">{{ doctor.get_specialty_display }}</p>
+
+            <div class="flex items-center gap-4 text-xs mb-4" style="color:#8FA8C3;">
+                <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>{{ doctor.rating }}</span>
+                <span><i class="fa-solid fa-briefcase mr-1"></i>{{ doctor.years_of_experience }}y exp</span>
+            </div>
+
+            {% if doctor.bio %}
+            <p class="text-xs mb-4 leading-relaxed" style="color:#4A6785;">{{ doctor.bio|truncatewords:15 }}</p>
+            {% endif %}
+
+            <div class="flex gap-2">
+                {% if doctor.availability_status == 'online' %}
+                <a href="/dashboard/patient/consult/new/?doctor={{ doctor.user.pk }}"
+                    class="btn-primary text-xs px-4 py-2 flex-1 justify-center">
+                    <i class="fa-solid fa-comment-medical"></i> Consult Now
+                </a>
+                {% else %}
+                <span class="btn-secondary text-xs px-4 py-2 opacity-50 flex-1 justify-center cursor-not-allowed">Not
+                    Available</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="flex justify-center gap-2">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}&specialty={{ specialty_filter }}&status={{ status_filter }}"
+        class="btn-secondary px-4 py-2 text-sm">← Prev</a>
+    {% endif %}
+    <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{
+        page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}&specialty={{ specialty_filter }}&status={{ status_filter }}"
+        class="btn-secondary px-4 py-2 text-sm">Next →</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="mc-card p-12 text-center">
+    <i class="fa-solid fa-user-doctor text-5xl mb-4" style="color:#8FA8C3;"></i>
+    <p class="text-lg font-semibold mb-2" style="font-family:'Sora',sans-serif;">No doctors found</p>
+    <p class="text-sm mb-5" style="color:#4A6785;">Try adjusting your filters.</p>
+    <a href="/dashboard/patient/doctors/" class="btn-secondary">Clear Filters</a>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Dashboard — MediConnect{% endblock %}
+
+{% block content %}
+<!-- Header with status toggle -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div>
+        <h1 class="text-3xl font-bold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">
+            Doctor Dashboard
+        </h1>
+        <p class="mt-1 text-sm" style="color:#4A6785;">Dr. {{ request.user.get_full_name }}</p>
+    </div>
+
+    <!-- Availability toggle -->
+    <div class="flex items-center gap-3 mc-card p-4">
+        <span class="text-sm font-medium" style="color:#4A6785;">My Status:</span>
+        <form method="post" action="/dashboard/doctor/status/" id="status-form">
+            {% csrf_token %}
+            <input type="hidden" name="status" id="status-input" value="">
+        </form>
+        <div class="flex gap-2">
+            <button onclick="setStatus('online')"
+                class="status-toggle px-3 py-1.5 rounded-full text-xs font-semibold transition-all
+                     {% if doctor_profile.availability_status == 'online' %}badge-online ring-2 ring-green-400{% else %}text-gray-400 border border-gray-200{% endif %}"
+                id="btn-online">
+                <i class="fa-solid fa-circle mr-1 text-green-500"></i>Online
+            </button>
+            <button onclick="setStatus('busy')"
+                class="status-toggle px-3 py-1.5 rounded-full text-xs font-semibold transition-all
+                     {% if doctor_profile.availability_status == 'busy' %}badge-busy ring-2 ring-yellow-400{% else %}text-gray-400 border border-gray-200{% endif %}"
+                id="btn-busy">
+                <i class="fa-solid fa-circle mr-1 text-yellow-500"></i>Busy
+            </button>
+            <button onclick="setStatus('offline')"
+                class="status-toggle px-3 py-1.5 rounded-full text-xs font-semibold transition-all
+                     {% if doctor_profile.availability_status == 'offline' %}badge-offline ring-2 ring-gray-400{% else %}text-gray-400 border border-gray-200{% endif %}"
+                id="btn-offline">
+                <i class="fa-solid fa-circle mr-1 text-gray-400"></i>Offline
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Active consultation alert -->
+{% if active_consultation %}
+<div class="glass-card p-5 mb-6 flex items-center justify-between" style="border-left: 4px solid #00C9A7;">
+    <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+            style="background: linear-gradient(135deg,#00C9A7,#0A6EBD);">{{ active_consultation.patient.get_initials }}
+        </div>
+        <div>
+            <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">Active Session: {{
+                active_consultation.patient.get_full_name }}</p>
+            <p class="text-xs" style="color:#4A6785;">Started {{ active_consultation.started_at|timesince }} ago</p>
+        </div>
+    </div>
+    <a href="/consultations/{{ active_consultation.pk }}/room/" class="btn-accent text-sm px-5 py-2">
+        <i class="fa-solid fa-comment-medical"></i> Return to Chat
+    </a>
+</div>
+{% endif %}
+
+<!-- Stats + Queue section -->
+<div class="grid lg:grid-cols-3 gap-6 mb-8">
+
+    <!-- Queue counter -->
+    <div class="mc-card p-8 text-center lg:col-span-1">
+        <p class="text-xs uppercase font-semibold tracking-wider mb-3"
+            style="color:#8FA8C3; font-family:'Sora',sans-serif;">
+            <i class="fa-solid fa-users-line mr-2"></i>Patients in Queue
+        </p>
+        <p class="font-bold mb-4 {% if stats.queue_count > 0 %}text-blue-600{% else %}text-gray-400{% endif %}" id="queue-count"
+            style="font-family:'Sora',sans-serif; font-size:5rem; line-height:1;">
+            {{ stats.queue_count }}
+        </p>
+        <form method="post" action="/dashboard/doctor/accept/">
+            {% csrf_token %}
+            <button type="submit" class="btn-accent w-full justify-center py-4 text-base
+                                   {% if stats.queue_count == 0 %}opacity-50 cursor-not-allowed{% endif %}" {% if
+                stats.queue_count==0 %}disabled{% endif %}>
+                <i class="fa-solid fa-stethoscope"></i>
+                {% if stats.queue_count > 0 %}Accept Next Patient{% else %}No Patients Waiting{% endif %}
+            </button>
+        </form>
+    </div>
+
+    <!-- Stats -->
+    <div class="lg:col-span-2 grid sm:grid-cols-2 gap-4">
+        <div class="mc-card p-6 animate-slide-up" data-stagger>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3"
+                style="background: linear-gradient(135deg,#0A6EBD,#3B9EE8);">
+                <i class="fa-solid fa-check-double text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;">{{ stats.completed_today }}</p>
+            <p class="text-sm mt-1" style="color:#4A6785;">Completed Today</p>
+        </div>
+        <div class="mc-card p-6 animate-slide-up" data-stagger>
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3"
+                style="background: linear-gradient(135deg,#00C9A7,#00E5C4);">
+                <i class="fa-solid fa-list-check text-sm"></i>
+            </div>
+            <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;">{{ stats.total_completed }}</p>
+            <p class="text-sm mt-1" style="color:#4A6785;">Total Completed</p>
+        </div>
+        <div class="mc-card p-4 flex items-center gap-3 sm:col-span-2">
+            <i class="fa-solid fa-clock-rotate-left" style="color:#0A6EBD;"></i>
+            <a href="/dashboard/doctor/history/" class="font-medium text-sm" style="color:#0A6EBD;">View Full
+                Consultation History →</a>
+        </div>
+    </div>
+</div>
+
+<!-- Next up in queue -->
+{% if queue %}
+<div class="mc-card p-6">
+    <h2 class="text-lg font-semibold mb-4" style="font-family:'Sora',sans-serif;">Next up in Queue</h2>
+    <div class="space-y-3">
+        {% for c in queue %}
+        <div class="flex items-start gap-4 p-4 rounded-2xl" style="background:#F0F4F9;">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-sm"
+                style="background: linear-gradient(135deg,#0A6EBD,#00C9A7);">{{ c.patient.get_initials }}</div>
+            <div class="flex-1 min-w-0">
+                <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">{{ c.patient.get_full_name }}
+                </p>
+                <p class="text-xs mt-1 truncate" style="color:#4A6785;">{{ c.symptoms_description|truncatechars:80 }}
+                </p>
+                <p class="text-xs mt-1" style="color:#8FA8C3;"><i class="fa-regular fa-clock mr-1"></i>{{
+                    c.created_at|timesince }} ago</p>
+            </div>
+            <span class="status-badge badge-pending text-xs flex-shrink-0">Pending</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function setStatus(status) {
+        document.getElementById('status-input').value = status;
+        fetch('/dashboard/doctor/status/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'status=' + status,
+        }).then(r => r.json()).then(data => {
+            if (data.status === 'ok') {
+                location.reload();
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}Prescription #{{ prescription.pk }} — MediConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            <a href="/dashboard/" class="text-sm" style="color:#4A6785;"><i
+                    class="fa-solid fa-arrow-left mr-1"></i>Dashboard</a>
+            <h1 class="text-3xl font-bold mt-2" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Digital
+                Prescription</h1>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+
+        <!-- Left: Prescription Document Preview -->
+        <div class="lg:col-span-2">
+            <div class="mc-card p-8 relative overflow-hidden">
+                <!-- Watermark -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-3"
+                    style="opacity:0.03;">
+                    <i class="fa-solid fa-cross" style="font-size:20rem; color:#0A6EBD;"></i>
+                </div>
+
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-6 pb-5 border-b"
+                    style="border-color:rgba(10,110,189,0.12);">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white"
+                            style="background:linear-gradient(135deg,#0A6EBD,#00C9A7);">
+                            <i class="fa-solid fa-stethoscope text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold" style="font-family:'Sora',sans-serif; color:#0A6EBD;">MediConnect</p>
+                            <p class="text-xs" style="color:#8FA8C3;">Digital Health Platform</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-xs" style="color:#8FA8C3;">
+                        <p>Prescription #{{ prescription.pk }}</p>
+                        <p>{{ prescription.issued_at|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+
+                <!-- Doctor & Patient Info -->
+                <div class="grid sm:grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 rounded-2xl" style="background:#EFF6FF;">
+                        <p class="text-xs uppercase font-semibold tracking-wider mb-2" style="color:#0A6EBD;">
+                            Prescribing Doctor</p>
+                        <p class="font-semibold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Dr. {{
+                            prescription.doctor.get_full_name }}</p>
+                        {% if prescription.doctor.doctorprofile %}
+                        <p class="text-xs mt-1" style="color:#4A6785;">{{
+                            prescription.doctor.doctorprofile.get_specialty_display }}</p>
+                        <p class="text-xs" style="color:#4A6785;">Lic. No: {{
+                            prescription.doctor.doctorprofile.license_number }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="p-4 rounded-2xl" style="background:#F0F4F9;">
+                        <p class="text-xs uppercase font-semibold tracking-wider mb-2" style="color:#4A6785;">Patient
+                        </p>
+                        <p class="font-semibold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">{{
+                            prescription.patient.get_full_name }}</p>
+                        <p class="text-xs mt-1" style="color:#4A6785;">Date Issued: {{ prescription.issued_at|date:"F j,
+                            Y" }}</p>
+                    </div>
+                </div>
+
+                <!-- Medicines Table -->
+                <div class="mb-6">
+                    <p class="font-semibold mb-3 text-sm" style="color:#0A6EBD; font-family:'Sora',sans-serif;">
+                        <i class="fa-solid fa-pills mr-2"></i>Prescribed Medicines
+                    </p>
+                    {% if prescription.medicines %}
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr style="background:#0A6EBD; color:#fff; font-size:0.78rem;">
+                                    <th class="py-3 px-4 text-left rounded-tl-xl">Medicine</th>
+                                    <th class="py-3 px-4 text-left">Dosage</th>
+                                    <th class="py-3 px-4 text-left">Frequency</th>
+                                    <th class="py-3 px-4 text-left rounded-tr-xl">Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for med in prescription.medicines %}
+                                <tr class="even:bg-blue-50">
+                                    <td class="py-3 px-4 font-medium" style="color:#0D1B2A;">{{ med.name }}</td>
+                                    <td class="py-3 px-4" style="color:#4A6785;">{{ med.dosage }}</td>
+                                    <td class="py-3 px-4" style="color:#4A6785;">{{ med.frequency }}</td>
+                                    <td class="py-3 px-4" style="color:#4A6785;">{{ med.duration }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-sm" style="color:#8FA8C3;">No medicines listed.</p>
+                    {% endif %}
+                </div>
+
+                {% if prescription.notes %}
+                <div class="mb-4">
+                    <p class="font-semibold text-sm mb-1" style="color:#0A6EBD; font-family:'Sora',sans-serif;">Clinical
+                        Notes</p>
+                    <p class="text-sm leading-relaxed" style="color:#4A6785;">{{ prescription.notes }}</p>
+                </div>
+                {% endif %}
+
+                {% if prescription.instructions %}
+                <div class="mb-6">
+                    <p class="font-semibold text-sm mb-1" style="color:#0A6EBD; font-family:'Sora',sans-serif;">Patient
+                        Instructions</p>
+                    <p class="text-sm leading-relaxed" style="color:#4A6785;">{{ prescription.instructions }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Signature line -->
+                <div class="mt-8 pt-4 border-t" style="border-color:rgba(10,110,189,0.15);">
+                    <div class="w-48 border-b-2 mb-1" style="border-color:#0A6EBD;"></div>
+                    <p class="text-xs" style="color:#4A6785;">Dr. {{ prescription.doctor.get_full_name }}</p>
+                    {% if prescription.doctor.doctorprofile %}
+                    <p class="text-xs" style="color:#8FA8C3;">{{ prescription.doctor.doctorprofile.get_specialty_display
+                        }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Actions Panel -->
+        <div class="space-y-4">
+            {% if prescription.pdf_file %}
+            <a href="/prescriptions/{{ prescription.pk }}/download/" class="btn-primary w-full justify-center py-4">
+                <i class="fa-solid fa-download"></i> Download PDF
+            </a>
+            {% endif %}
+            <button onclick="window.print()" class="btn-secondary w-full justify-center py-4">
+                <i class="fa-solid fa-print"></i> Print
+            </button>
+
+            <div class="mc-card p-5">
+                <h4 class="font-semibold text-sm mb-3" style="font-family:'Sora',sans-serif; color:#0D1B2A;">
+                    Consultation Summary</h4>
+                <div class="space-y-2 text-xs" style="color:#4A6785;">
+                    <p><i class="fa-solid fa-hashtag w-4 mr-1" style="color:#0A6EBD;"></i>Consultation #{{
+                        prescription.consultation.pk }}</p>
+                    <p><i class="fa-solid fa-calendar w-4 mr-1" style="color:#0A6EBD;"></i>{{
+                        prescription.issued_at|date:"F j, Y" }}</p>
+                    <p><i class="fa-solid fa-user-doctor w-4 mr-1" style="color:#0A6EBD;"></i>Dr. {{
+                        prescription.doctor.get_full_name }}</p>
+                    <p><i class="fa-solid fa-user w-4 mr-1" style="color:#0A6EBD;"></i>{{
+                        prescription.patient.get_full_name }}</p>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-2xl text-xs" style="background:#F0F4F9; color:#8FA8C3; line-height:1.6;">
+                <i class="fa-solid fa-shield-halved mr-1" style="color:#0A6EBD;"></i>
+                This is a digitally generated prescription from MediConnect. Always consult your doctor before changing
+                medication.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Sign In — MediConnect{% endblock %}
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex">
+
+    <!-- Left: Decorative panel (hidden on mobile) -->
+    <div class="hidden lg:flex lg:w-1/2 relative items-center justify-center overflow-hidden"
+        style="background: linear-gradient(135deg, #064F8C 0%, #0A6EBD 60%, #00C9A7 100%);">
+        <div class="absolute inset-0"
+            style="background: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22none%22 stroke=%22rgba(255,255,255,0.06)%22 stroke-width=%221%22/></svg>') repeat;">
+        </div>
+        <div class="relative text-white text-center px-12">
+            <div class="w-20 h-20 rounded-3xl flex items-center justify-center text-white text-3xl mx-auto mb-6"
+                style="background: rgba(255,255,255,0.15); backdrop-filter:blur(10px);">
+                <i class="fa-solid fa-stethoscope"></i>
+            </div>
+            <h2 class="text-4xl font-bold mb-4" style="font-family:'Sora',sans-serif;">Welcome Back</h2>
+            <p class="text-lg opacity-75 max-w-xs mx-auto">Sign in to connect with your doctor or manage your patient
+                queue.</p>
+            <div class="mt-10 space-y-3 text-left">
+                <div class="flex items-center gap-3 opacity-80 text-sm">
+                    <i class="fa-solid fa-circle-check text-teal-300 w-4"></i> Real-time consultations
+                </div>
+                <div class="flex items-center gap-3 opacity-80 text-sm">
+                    <i class="fa-solid fa-circle-check text-teal-300 w-4"></i> Digital prescriptions
+                </div>
+                <div class="flex items-center gap-3 opacity-80 text-sm">
+                    <i class="fa-solid fa-circle-check text-teal-300 w-4"></i> Secure & encrypted
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Login form -->
+    <div class="flex-1 flex items-center justify-center px-6 py-12">
+        <div class="w-full max-w-md">
+
+            <!-- Logo -->
+            <div class="flex items-center gap-2 mb-8">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white"
+                    style="background: linear-gradient(135deg, #0A6EBD, #00C9A7);">
+                    <i class="fa-solid fa-stethoscope text-sm"></i>
+                </div>
+                <span style="font-family:'Sora',sans-serif; font-weight:700; color:#0D1B2A;">Medi<span
+                        style="color:#0A6EBD;">Connect</span></span>
+            </div>
+
+            <h1 class="text-3xl font-bold mb-2" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Sign In</h1>
+            <p class="mb-8 text-sm" style="color:#4A6785;">Enter your credentials to access your account.</p>
+
+            <div class="glass-card p-8">
+                <form method="post" class="space-y-5" id="login-form">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div>
+                        <label class="mc-label" for="id_username">Username</label>
+                        <input type="text" name="username" id="id_username" class="mc-input" placeholder="your_username"
+                            autocomplete="username" required value="{{ form.username.value|default:'' }}">
+                        {% if form.username.errors %}<p class="text-red-500 text-xs mt-1">{{ form.username.errors.0 }}
+                        </p>{% endif %}
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <label class="mc-label" for="id_password">Password</label>
+                            <a href="#" class="text-xs" style="color:#00C9A7;">Forgot password?</a>
+                        </div>
+                        <input type="password" name="password" id="id_password" class="mc-input" placeholder="••••••••"
+                            autocomplete="current-password" required>
+                        {% if form.password.errors %}<p class="text-red-500 text-xs mt-1">{{ form.password.errors.0 }}
+                        </p>{% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-primary w-full justify-center py-4 text-base">
+                        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                    </button>
+                </form>
+
+                <p class="text-center mt-6 text-sm" style="color:#4A6785;">
+                    Don't have an account?
+                    <a href="/accounts/register/patient/" style="color:#0A6EBD; font-weight:600;">Get Started</a>
+                    &nbsp;·&nbsp;
+                    <a href="/accounts/register/doctor/" style="color:#0A6EBD; font-weight:600;">Register as Doctor</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
