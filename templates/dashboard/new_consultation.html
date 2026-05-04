@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}New Consultation — MediConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <a href="/dashboard/patient/" class="text-sm" style="color:#4A6785;"><i class="fa-solid fa-arrow-left mr-1"></i>
+            Back to Dashboard</a>
+        <h1 class="text-3xl font-bold mt-3" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Start a Consultation
+        </h1>
+        <p class="mt-1 text-sm" style="color:#4A6785;">Select a doctor and describe your symptoms in detail.</p>
+    </div>
+
+    <div class="mc-card p-8">
+        <form method="post" id="new-consult-form">
+            {% csrf_token %}
+
+            <div class="mb-6">
+                <label class="mc-label">Select Doctor</label>
+                <select name="doctor" class="mc-select" required>
+                    <option value="">— Choose an available doctor —</option>
+                    {% for doc in doctors %}
+                    <option value="{{ doc.user.pk }}" {% if preselect_doctor==doc.user.pk|stringformat:"s" %}selected{%
+                        endif %}>
+                        Dr. {{ doc.user.get_full_name }} — {{ doc.get_specialty_display }}
+                        {% if doc.availability_status == 'online' %}(Online){% endif %}
+                    </option>
+                    {% empty %}
+                    <option value="" disabled>No doctors online right now</option>
+                    {% endfor %}
+                </select>
+                {% if not doctors %}
+                <p class="text-amber-600 text-xs mt-2">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+                    No doctors are online right now. Check back shortly or <a href="/dashboard/patient/doctors/">browse
+                        all doctors</a>.
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
+                <label class="mc-label">Describe Your Symptoms</label>
+                <textarea name="symptoms_description" class="mc-input" rows="6" required
+                    placeholder="Please describe your symptoms, when they started, and how severe they are. Be as detailed as possible to help your doctor…"></textarea>
+            </div>
+
+            <div class="p-4 rounded-2xl text-sm mb-6" style="background:#F0F4F9; color:#4A6785;">
+                <i class="fa-solid fa-circle-info text-blue-500 mr-2"></i>
+                Your consultation request will be sent to the selected doctor. They will accept your session when
+                available.
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center py-4">
+                <i class="fa-solid fa-paper-plane"></i> Submit Consultation Request
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}User Management — MediConnect Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex items-center justify-between">
+    <div>
+        <a href="/dashboard/admin/" class="text-sm" style="color:#4A6785;"><i
+                class="fa-solid fa-arrow-left mr-1"></i>Admin Home</a>
+        <h1 class="text-3xl font-bold mt-2" style="font-family:'Sora',sans-serif; color:#0D1B2A;">User Management</h1>
+    </div>
+</div>
+
+<div class="mc-card p-6">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left"
+                    style="color:#8FA8C3; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em;">
+                    <th class="pb-3 pr-4">User</th>
+                    <th class="pb-3 pr-4">Role</th>
+                    <th class="pb-3 pr-4">Email</th>
+                    <th class="pb-3 pr-4">Joined</th>
+                    <th class="pb-3">Active</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in page_obj %}
+                <tr class="border-t hover:bg-blue-50 transition-colors" style="border-color:rgba(10,110,189,0.06);">
+                    <td class="py-3 pr-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                                style="background:linear-gradient(135deg,#0A6EBD,#00C9A7);">{{ u.get_initials }}</div>
+                            <p class="font-medium" style="color:#0D1B2A;">{{ u.get_full_name|default:u.username }}</p>
+                        </div>
+                    </td>
+                    <td class="py-3 pr-4">
+                        <span
+                            class="status-badge badge-{% if u.role == 'doctor' %}active{% elif u.role == 'admin' %}online{% else %}offline{% endif %}">
+                            {{ u.get_role_display|default:u.role|capfirst }}
+                        </span>
+                    </td>
+                    <td class="py-3 pr-4 text-xs" style="color:#4A6785;">{{ u.email|default:"—" }}</td>
+                    <td class="py-3 pr-4 text-xs" style="color:#4A6785;">{{ u.date_joined|date:"M j, Y" }}</td>
+                    <td class="py-3">
+                        {% if u.is_active %}
+                        <span class="text-green-600 text-xs font-medium"><i class="fa-solid fa-circle-check"></i>
+                            Yes</span>
+                        {% else %}
+                        <span class="text-red-500 text-xs font-medium"><i class="fa-solid fa-circle-xmark"></i>
+                            No</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="py-8 text-center" style="color:#8FA8C3;">No users found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="flex justify-center gap-2 mt-6">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn-secondary px-4 py-2 text-sm">← Prev</a>
+        {% endif %}
+        <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{
+            page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn-secondary px-4 py-2 text-sm">Next →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% block title %}Consultation #{{ consultation.pk }} — MediConnect{% endblock %}
+{% block main_class %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="flex h-screen overflow-hidden" style="background:#F0F4F9;">
+
+    <!-- ══ INFO PANEL (left) ══ -->
+    <div id="info-panel" class="w-80 flex-shrink-0 hidden lg:flex flex-col border-r overflow-y-auto"
+        style="background:#fff; border-color:rgba(10,110,189,0.1);">
+
+        <!-- Header -->
+        <div class="p-5 border-b"
+            style="border-color:rgba(10,110,189,0.1); background:linear-gradient(135deg,#064F8C,#0A6EBD);">
+            <a href="/dashboard/" class="text-white opacity-60 text-xs flex items-center gap-1 mb-3">
+                <i class="fa-solid fa-arrow-left"></i> Dashboard
+            </a>
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg"
+                    style="background:rgba(255,255,255,0.2);">{{ other_party.get_initials }}</div>
+                <div class="text-white">
+                    <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">{{ other_party.get_full_name
+                        }}</p>
+                    {% if is_doctor %}
+                    <p class="text-xs opacity-70">Patient</p>
+                    {% else %}
+                    <p class="text-xs opacity-70">
+                        {% if consultation.doctor.doctorprofile %}Dr. · {{
+                        consultation.doctor.doctorprofile.get_specialty_display }}{% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="mt-3">
+                <span class="status-badge badge-{{ consultation.status }} text-xs">{{ consultation.get_status_display
+                    }}</span>
+            </div>
+        </div>
+
+        <!-- Symptoms -->
+        <div class="p-5 border-b" style="border-color:rgba(10,110,189,0.08);">
+            <h4 class="text-xs uppercase font-semibold tracking-wider mb-2" style="color:#8FA8C3;">Symptoms</h4>
+            <p class="text-sm leading-relaxed" style="color:#4A6785;">{{ consultation.symptoms_description }}</p>
+        </div>
+
+        <!-- Images -->
+        {% if images %}
+        <div class="p-5 border-b" style="border-color:rgba(10,110,189,0.08);">
+            <h4 class="text-xs uppercase font-semibold tracking-wider mb-3" style="color:#8FA8C3;">Uploaded Images</h4>
+            <div class="grid grid-cols-2 gap-2">
+                {% for img in images %}
+                <img src="{{ img.image.url }}" alt="Consultation image"
+                    class="w-full h-24 object-cover rounded-xl cursor-pointer hover:opacity-90 transition-opacity"
+                    onclick="openLightbox('{{ img.image.url }}')">
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Patient profile (doctor view) -->
+        {% if is_doctor and consultation.patient.patientprofile %}
+        {% with pp=consultation.patient.patientprofile %}
+        <div class="p-5">
+            <h4 class="text-xs uppercase font-semibold tracking-wider mb-3" style="color:#8FA8C3;">Patient Info</h4>
+            <div class="space-y-2 text-sm" style="color:#4A6785;">
+                {% if pp.gender %}<p><i class="fa-solid fa-venus-mars w-4 mr-2" style="color:#0A6EBD;"></i>{{
+                    pp.get_gender_display }}</p>{% endif %}
+                {% if pp.blood_type %}<p><i class="fa-solid fa-droplet w-4 mr-2" style="color:#EF4444;"></i>{{
+                    pp.get_blood_type_display }}</p>{% endif %}
+                {% if pp.allergies %}<p class="mt-2"><span class="font-semibold"
+                        style="color:#0D1B2A;">Allergies:</span> {{ pp.allergies }}</p>{% endif %}
+                {% if pp.medical_history %}<p class="mt-2"><span class="font-semibold"
+                        style="color:#0D1B2A;">History:</span> {{ pp.medical_history|truncatewords:20 }}</p>{% endif %}
+            </div>
+        </div>
+        {% endwith %}
+        {% endif %}
+
+        <!-- End Consultation (doctor) -->
+        {% if is_doctor and consultation.status == 'active' %}
+        <div class="p-5 mt-auto border-t" style="border-color:rgba(239,68,68,0.15);">
+            <button onclick="confirmEnd()" class="btn-danger w-full justify-center py-3 text-sm">
+                <i class="fa-solid fa-phone-slash"></i> End Consultation
+            </button>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- ══ CHAT WINDOW (right) ══ -->
+    <div class="flex-1 flex flex-col min-w-0">
+
+        <!-- Chat header (mobile) -->
+        <div class="lg:hidden flex items-center gap-3 p-4 border-b"
+            style="background:rgba(255,255,255,0.9); border-color:rgba(10,110,189,0.1);">
+            <a href="/dashboard/" class="text-gray-500 p-2"><i class="fa-solid fa-arrow-left"></i></a>
+            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white font-bold text-sm"
+                style="background:linear-gradient(135deg,#0A6EBD,#00C9A7);">{{ other_party.get_initials }}</div>
+            <div>
+                <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">{{ other_party.get_full_name }}
+                </p>
+                <span class="status-badge badge-{{ consultation.status }} text-xs">{{ consultation.get_status_display
+                    }}</span>
+            </div>
+            {% if is_doctor and consultation.status == 'active' %}
+            <button onclick="confirmEnd()" class="ml-auto text-red-500 text-sm p-2"><i
+                    class="fa-solid fa-phone-slash"></i></button>
+            {% endif %}
+        </div>
+
+        <!-- Messages area -->
+        <div id="message-list" class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-3">
+            {% for msg in messages %}
+            {% include 'components/_message_bubble.html' with msg=msg current_user=request.user %}
+            {% endfor %}
+            <!-- Typing indicator (hidden by default) -->
+            <div id="typing-indicator" class="hidden flex items-center gap-2 text-sm" style="color:#8FA8C3;">
+                <div class="flex gap-1">
+                    <span class="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style="animation-delay:0ms;"></span>
+                    <span class="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style="animation-delay:150ms;"></span>
+                    <span class="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style="animation-delay:300ms;"></span>
+                </div>
+                <span id="typing-name"></span> is typing…
+            </div>
+        </div>
+
+        <!-- Message Input Bar -->
+        {% if consultation.status == 'active' %}
+        <div class="glass-card rounded-none border-t border-x-0 border-b-0 p-4">
+            <!-- Image preview strip -->
+            <div id="image-preview-strip" class="hidden flex gap-2 mb-3 overflow-x-auto pb-1"></div>
+            <div class="flex gap-2 items-end">
+                <!-- Attach image -->
+                <label for="image-upload"
+                    class="flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors"
+                    style="color:#0A6EBD; border:2px dashed rgba(10,110,189,0.3);">
+                    <i class="fa-solid fa-paperclip"></i>
+                </label>
+                <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp" class="hidden"
+                    onchange="handleImageAttach(this)">
+
+                <!-- Text input -->
+                <textarea id="message-input" class="flex-1 mc-input resize-none" rows="1" maxlength="2000"
+                    placeholder="Type a message…" style="max-height:120px; overflow-y:auto;"
+                    onkeydown="handleEnter(event)" oninput="autoResize(this); handleTyping();"></textarea>
+
+                <!-- Send button -->
+                <button id="send-btn" onclick="sendMessage()"
+                    class="btn-accent flex-shrink-0 w-11 h-11 rounded-xl p-0 justify-center">
+                    <i class="fa-solid fa-paper-plane text-sm"></i>
+                </button>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-6 glass-card rounded-none border-t" style="color:#4A6785;">
+            <i class="fa-solid fa-lock mr-2"></i>
+            {% if consultation.status == 'completed' %}This consultation has ended.
+            {% if not is_doctor and consultation.prescription_ready %} <a
+                href="/prescriptions/{{ consultation.prescription.pk }}/" style="color:#0A6EBD;">View Prescription</a>{%
+            endif %}
+            {% elif consultation.status == 'pending' %}Waiting for doctor to accept your consultation…
+            {% else %}This consultation is {{ consultation.status }}.
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center" style="background:rgba(0,0,0,0.85);"
+    onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Full size" class="max-w-[90vw] max-h-[90vh] rounded-2xl object-contain">
+    <button class="absolute top-4 right-4 text-white text-2xl" onclick="closeLightbox()"><i
+            class="fa-solid fa-xmark"></i></button>
+</div>
+
+<!-- End Consultation Confirmation Modal -->
+{% if is_doctor and consultation.status == 'active' %}
+<div id="end-modal" class="fixed inset-0 z-50 hidden items-center justify-center" style="background:rgba(0,0,0,0.5);">
+    <div class="mc-card p-8 max-w-sm mx-4 text-center">
+        <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4"
+            style="background:linear-gradient(135deg,#EF4444,#FF6B6B);">
+            <i class="fa-solid fa-phone-slash"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="font-family:'Sora',sans-serif;">End Consultation?</h3>
+        <p class="text-sm mb-6" style="color:#4A6785;">You will be redirected to write a prescription for this patient.
+        </p>
+        <div class="flex gap-3">
+            <button onclick="closeModal()" class="btn-secondary flex-1 justify-center">Cancel</button>
+            <form method="post" action="/consultations/{{ consultation.pk }}/end/" class="flex-1">
+                {% csrf_token %}
+                <button type="submit" class="btn-danger w-full justify-center">End & Write Rx</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+{% load static %}
+<div id="chat-config" class="hidden"
+     data-consultation-id="{{ consultation.id }}"
+     data-user-id="{{ request.user.pk }}"
+     data-user-name="{{ request.user.get_full_name|escapejs }}"
+     data-fetch-url="/consultations/{{ consultation.pk }}/messages/"
+     data-upload-url="/consultations/{{ consultation.pk }}/upload-image/"
+     data-csrf="{{ csrf_token }}"></div>
+<script>
+  (function(){
+    var c = document.getElementById('chat-config');
+    window.CONSULTATION_ID = c.dataset.consultationId;
+    window.CURRENT_USER_ID = parseInt(c.dataset.userId, 10);
+    window.CURRENT_USER_NAME = c.dataset.userName;
+    window.FETCH_URL = c.dataset.fetchUrl;
+    window.UPLOAD_URL = c.dataset.uploadUrl;
+    window.CSRF = c.dataset.csrf;
+  })();
+</script>
+<script src="{% static 'js/chat.js' %}"></script>
+<script>
+    function openLightbox(url) {
+        document.getElementById('lightbox-img').src = url;
+        document.getElementById('lightbox').classList.replace('hidden', 'flex');
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.replace('flex', 'hidden');
+    }
+    function confirmEnd() {
+        document.getElementById('end-modal').classList.replace('hidden', 'flex');
+    }
+    function closeModal() {
+        document.getElementById('end-modal').classList.replace('flex', 'hidden');
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLightbox(); closeModal(); } });
+
+    // Scroll to bottom
+    const ml = document.getElementById('message-list');
+    if (ml) ml.scrollTop = ml.scrollHeight;
+</script>
+{% endblock %}
