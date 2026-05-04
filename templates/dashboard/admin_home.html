@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard — MediConnect{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+  <h1 class="text-3xl font-bold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Admin Dashboard</h1>
+  <p class="mt-1 text-sm" style="color:#4A6785;">Platform overview and management tools.</p>
+</div>
+
+<!-- Stats -->
+<div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+  <div class="mc-card p-6 animate-slide-up" data-stagger>
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:linear-gradient(135deg,#0A6EBD,#3B9EE8);">
+      <i class="fa-solid fa-users text-sm"></i>
+    </div>
+    <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;">{{ stats.total_patients }}</p>
+    <p class="text-sm mt-1" style="color:#4A6785;">Total Patients</p>
+  </div>
+  <div class="mc-card p-6 animate-slide-up" data-stagger>
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:linear-gradient(135deg,#00C9A7,#0A6EBD);">
+      <i class="fa-solid fa-user-doctor text-sm"></i>
+    </div>
+    <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;">{{ stats.total_doctors }}</p>
+    <p class="text-sm mt-1" style="color:#4A6785;">Total Doctors</p>
+  </div>
+  <div class="mc-card p-6 animate-slide-up {% if stats.pending_doctors > 0 %}border-2 border-amber-400{% endif %}" data-stagger>
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:linear-gradient(135deg,#F5A623,#FF6B6B);">
+      <i class="fa-solid fa-clock text-sm"></i>
+    </div>
+    <p class="text-2xl font-bold {% if stats.pending_doctors > 0 %}text-amber-600{% endif %}" style="font-family:'Sora',sans-serif;">{{ stats.pending_doctors }}</p>
+    <p class="text-sm mt-1" style="color:#4A6785;">Pending Approvals</p>
+    {% if stats.pending_doctors > 0 %}
+    <a href="/dashboard/admin/doctors/" class="text-xs mt-2 block text-amber-600">Review now →</a>
+    {% endif %}
+  </div>
+  <div class="mc-card p-6 animate-slide-up" data-stagger>
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:linear-gradient(135deg,#0A6EBD,#064F8C);">
+      <i class="fa-solid fa-notes-medical text-sm"></i>
+    </div>
+    <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;">{{ stats.consultations_today }}</p>
+    <p class="text-sm mt-1" style="color:#4A6785;">Consultations Today</p>
+  </div>
+  <div class="mc-card p-6 animate-slide-up" data-stagger>
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:linear-gradient(135deg,#00C9A7,#00E5C4);">
+      <i class="fa-solid fa-circle-dot text-sm"></i>
+    </div>
+    <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;">{{ stats.active_consultations }}</p>
+    <p class="text-sm mt-1" style="color:#4A6785;">Active Right Now</p>
+  </div>
+  <div class="mc-card p-6 animate-slide-up" data-stagger>
+    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:linear-gradient(135deg,#064F8C,#0A6EBD);">
+      <i class="fa-solid fa-database text-sm"></i>
+    </div>
+    <p class="text-2xl font-bold" style="font-family:'Sora',sans-serif;">{{ stats.total_consultations }}</p>
+    <p class="text-sm mt-1" style="color:#4A6785;">Total Consultations</p>
+  </div>
+</div>
+
+<!-- Quick actions -->
+<div class="grid sm:grid-cols-2 gap-4 mb-8">
+  <a href="/dashboard/admin/doctors/" class="mc-card p-5 flex items-center gap-4 no-underline">
+    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background:linear-gradient(135deg,#0A6EBD,#00C9A7);">
+      <i class="fa-solid fa-user-doctor"></i>
+    </div>
+    <div>
+      <p class="font-semibold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Doctor Management</p>
+      <p class="text-sm" style="color:#4A6785;">Approve, reject, view all doctors</p>
+    </div>
+    <i class="fa-solid fa-chevron-right ml-auto" style="color:#8FA8C3;"></i>
+  </a>
+  <a href="/dashboard/admin/users/" class="mc-card p-5 flex items-center gap-4 no-underline">
+    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background:linear-gradient(135deg,#00C9A7,#0A6EBD);">
+      <i class="fa-solid fa-users"></i>
+    </div>
+    <div>
+      <p class="font-semibold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">User Management</p>
+      <p class="text-sm" style="color:#4A6785;">View and manage all users</p>
+    </div>
+    <i class="fa-solid fa-chevron-right ml-auto" style="color:#8FA8C3;"></i>
+  </a>
+</div>
+
+<!-- Recent Consultations -->
+<div class="mc-card p-6">
+  <h2 class="text-lg font-semibold mb-5" style="font-family:'Sora',sans-serif;">Recent Activity</h2>
+  {% if recent_consultations %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left" style="color:#8FA8C3; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em;">
+          <th class="pb-3 pr-4">#</th>
+          <th class="pb-3 pr-4">Patient</th>
+          <th class="pb-3 pr-4">Doctor</th>
+          <th class="pb-3 pr-4">Date</th>
+          <th class="pb-3">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in recent_consultations %}
+        <tr class="border-t" style="border-color:rgba(10,110,189,0.06);">
+          <td class="py-3 pr-4" style="color:#8FA8C3;">{{ c.pk }}</td>
+          <td class="py-3 pr-4 font-medium" style="color:#0D1B2A;">{{ c.patient.get_full_name }}</td>
+          <td class="py-3 pr-4" style="color:#4A6785;">Dr. {{ c.doctor.get_full_name }}</td>
+          <td class="py-3 pr-4 text-xs" style="color:#4A6785;">{{ c.created_at|date:"M j, Y H:i" }}</td>
+          <td class="py-3"><span class="status-badge badge-{{ c.status }}">{{ c.get_status_display }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-center py-8" style="color:#8FA8C3;">No consultations yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

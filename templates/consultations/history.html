@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Consultation History — MediConnect{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex items-center justify-between">
+    <div>
+        <a href="{% if view_as == 'doctor' %}/dashboard/doctor/{% else %}/dashboard/patient/{% endif %}" class="text-sm"
+            style="color:#4A6785;">← Back to Dashboard</a>
+        <h1 class="text-3xl font-bold mt-2" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Consultation History
+        </h1>
+    </div>
+</div>
+
+<div class="mc-card p-6">
+    {% if page_obj %}
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left"
+                    style="color:#8FA8C3; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em;">
+                    <th class="pb-3 pr-4">#</th>
+                    <th class="pb-3 pr-4">{% if view_as == 'doctor' %}Patient{% else %}Doctor{% endif %}</th>
+                    <th class="pb-3 pr-4">Date</th>
+                    <th class="pb-3 pr-4">Status</th>
+                    <th class="pb-3">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in page_obj %}
+                <tr class="border-t hover:bg-blue-50 transition-colors" style="border-color:rgba(10,110,189,0.06);">
+                    <td class="py-3 pr-4 text-xs" style="color:#8FA8C3;">#{{ c.pk }}</td>
+                    <td class="py-3 pr-4 font-medium" style="color:#0D1B2A;">
+                        {% if view_as == 'doctor' %}{{ c.patient.get_full_name }}{% else %}Dr. {{ c.doctor.get_full_name
+                        }}{% endif %}
+                    </td>
+                    <td class="py-3 pr-4 text-xs" style="color:#4A6785;">{{ c.created_at|date:"M j, Y" }}</td>
+                    <td class="py-3 pr-4">
+                        <span class="status-badge badge-{{ c.status }}">
+                            {% if c.status == 'active' %}<span class="pulse-dot"></span>{% endif %}
+                            {{ c.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="py-3">
+                        {% if c.status == 'active' %}
+                        <a href="/consultations/{{ c.pk }}/room/" class="btn-accent text-xs px-4 py-2">Join Chat</a>
+                        {% elif c.status == 'completed' %}
+                        {% if c.prescription_ready %}
+                        <a href="/prescriptions/{{ c.prescription.pk }}/" class="btn-secondary text-xs px-4 py-2">View
+                            Rx</a>
+                        {% elif view_as == 'doctor' %}
+                        <a href="/prescriptions/create/{{ c.pk }}/" class="text-xs px-4 py-2 btn-primary">Write Rx</a>
+                        {% endif %}
+                        {% else %}
+                        <span class="text-xs" style="color:#8FA8C3;">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="flex justify-center gap-2 mt-6">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn-secondary px-4 py-2 text-sm">← Prev</a>
+        {% endif %}
+        <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{
+            page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn-secondary px-4 py-2 text-sm">Next →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="text-center py-12">
+        <i class="fa-solid fa-folder-open text-4xl mb-4" style="color:#8FA8C3;"></i>
+        <p class="font-medium" style="color:#0D1B2A;">No consultations found</p>
+        <p class="text-sm mt-1" style="color:#4A6785;">Your consultation history will appear here.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

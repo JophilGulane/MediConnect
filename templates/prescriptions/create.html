@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Write Prescription — MediConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">New Prescription</h1>
+        <p class="mt-1 text-sm" style="color:#4A6785;">Patient: <strong>{{ consultation.patient.get_full_name
+                }}</strong> · Consultation #{{ consultation.pk }}</p>
+    </div>
+
+    <!-- Patient summary -->
+    <div class="mc-card p-5 mb-6" style="border-left:4px solid #0A6EBD;">
+        <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                style="background:linear-gradient(135deg,#0A6EBD,#00C9A7);">{{ consultation.patient.get_initials }}
+            </div>
+            <div class="text-sm" style="color:#4A6785;">
+                <p class="font-semibold mb-1" style="color:#0D1B2A;">{{ consultation.patient.get_full_name }}</p>
+                <p class="leading-relaxed">{{ consultation.symptoms_description|truncatechars:200 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mc-card p-8">
+        <form method="post" id="prescription-form">
+            {% csrf_token %}
+            <input type="hidden" name="medicines_json" id="medicines-json" value="[]">
+
+            <!-- Medicines Section -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-base" style="font-family:'Sora',sans-serif; color:#0D1B2A;">
+                        <i class="fa-solid fa-pills mr-2" style="color:#0A6EBD;"></i>Medicines
+                    </h3>
+                    <button type="button" onclick="addMedicine()" class="btn-secondary text-sm px-4 py-2">
+                        <i class="fa-solid fa-plus"></i> Add Medicine
+                    </button>
+                </div>
+                <div id="medicines-list" class="space-y-3">
+                    <!-- Rows injected by JS -->
+                </div>
+                <p id="no-medicines-msg" class="text-sm text-center py-4" style="color:#8FA8C3;">
+                    Click "Add Medicine" to add prescriptions.
+                </p>
+            </div>
+
+            <hr class="my-6" style="border-color:rgba(10,110,189,0.1);">
+
+            <!-- Notes & Instructions -->
+            <div class="space-y-5">
+                <div>
+                    <label class="mc-label">Clinical Notes</label>
+                    {{ form.notes|add_class:"mc-input" }}
+                </div>
+                <div>
+                    <label class="mc-label">Patient Instructions</label>
+                    {{ form.instructions|add_class:"mc-input" }}
+                </div>
+            </div>
+
+            <button type="submit" onclick="collectMedicines()"
+                class="btn-primary w-full justify-center py-4 text-base mt-8">
+                <i class="fa-solid fa-file-prescription"></i> Generate Prescription PDF
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let medicines = [];
+
+    function addMedicine() {
+        const id = Date.now();
+        medicines.push({ id, name: '', dosage: '', frequency: '', duration: '' });
+        renderMedicines();
+    }
+
+    function removeMedicine(id) {
+        medicines = medicines.filter(m => m.id !== id);
+        renderMedicines();
+    }
+
+    function renderMedicines() {
+        const list = document.getElementById('medicines-list');
+        const msg = document.getElementById('no-medicines-msg');
+        msg.style.display = medicines.length ? 'none' : 'block';
+        list.innerHTML = medicines.map(m => `
+    <div class="grid grid-cols-4 gap-2 items-start animate-slide-up" id="med-${m.id}">
+      <input class="mc-input text-sm" placeholder="Medicine Name" oninput="updateMed(${m.id},'name',this.value)" value="${m.name}" required>
+      <input class="mc-input text-sm" placeholder="Dosage (e.g. 500mg)" oninput="updateMed(${m.id},'dosage',this.value)" value="${m.dosage}">
+      <input class="mc-input text-sm" placeholder="Frequency (e.g. 3x/day)" oninput="updateMed(${m.id},'frequency',this.value)" value="${m.frequency}">
+      <div class="flex gap-1">
+        <input class="mc-input text-sm flex-1" placeholder="Duration" oninput="updateMed(${m.id},'duration',this.value)" value="${m.duration}">
+        <button type="button" onclick="removeMedicine(${m.id})" class="p-2 text-red-400 hover:text-red-600"><i class="fa-solid fa-trash text-sm"></i></button>
+      </div>
+    </div>
+  `).join('');
+    }
+
+    function updateMed(id, field, value) {
+        const m = medicines.find(m => m.id === id);
+        if (m) m[field] = value;
+    }
+
+    function collectMedicines() {
+        document.getElementById('medicines-json').value = JSON.stringify(
+            medicines.map(({ name, dosage, frequency, duration }) => ({ name, dosage, frequency, duration }))
+        );
+    }
+
+    // Start with one empty row
+    addMedicine();
+</script>
+{% endblock %}

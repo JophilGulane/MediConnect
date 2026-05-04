@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}My Profile — MediConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <a href="/dashboard/" class="text-sm" style="color:#4A6785;"><i class="fa-solid fa-arrow-left mr-1"></i>
+            Dashboard</a>
+        <h1 class="text-3xl font-bold mt-2" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Patient Profile</h1>
+    </div>
+
+    <div class="mc-card p-8">
+        <!-- Avatar -->
+        <div class="flex items-center gap-5 mb-8 pb-6 border-b" style="border-color:rgba(10,110,189,0.1);">
+            <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl font-bold overflow-hidden"
+                style="background:linear-gradient(135deg,#0A6EBD,#00C9A7);">
+                {% if request.user.profile_picture %}
+                <img src="{{ request.user.profile_picture.url }}" alt="Profile" class="w-full h-full object-cover">
+                {% else %}
+                {{ request.user.get_initials }}
+                {% endif %}
+            </div>
+            <div>
+                <p class="text-xl font-bold" style="font-family:'Sora',sans-serif;">{{
+                    request.user.get_full_name|default:request.user.username }}</p>
+                <p class="text-sm" style="color:#4A6785;">Patient</p>
+                <p class="text-xs mt-1" style="color:#8FA8C3;">Member since {{ request.user.date_joined|date:"F Y" }}
+                </p>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-5">
+            {% csrf_token %}
+            <h3 class="font-semibold text-sm uppercase tracking-wider"
+                style="color:#0A6EBD; font-family:'Sora',sans-serif;">Personal Info</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="mc-label">First Name</label>
+                    <input name="first_name" class="mc-input" value="{{ request.user.first_name }}">
+                </div>
+                <div>
+                    <label class="mc-label">Last Name</label>
+                    <input name="last_name" class="mc-input" value="{{ request.user.last_name }}">
+                </div>
+            </div>
+            <div>
+                <label class="mc-label">Phone</label>
+                <input name="phone" class="mc-input" value="{{ request.user.phone }}" placeholder="+63...">
+            </div>
+            <div>
+                <label class="mc-label">Profile Picture</label>
+                <input type="file" name="profile_picture" class="mc-input py-2" accept="image/*">
+            </div>
+
+            <h3 class="font-semibold text-sm uppercase tracking-wider mt-6"
+                style="color:#0A6EBD; font-family:'Sora',sans-serif;">Health Info</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="mc-label">Date of Birth</label>
+                    {{ form.date_of_birth|add_class:"mc-input" }}
+                </div>
+                <div>
+                    <label class="mc-label">Gender</label>
+                    {{ form.gender|add_class:"mc-select" }}
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="mc-label">Blood Type</label>
+                    {{ form.blood_type|add_class:"mc-select" }}
+                </div>
+                <div>
+                    <label class="mc-label">Emergency Contact</label>
+                    {{ form.emergency_contact|add_class:"mc-input"|attr:"placeholder:+63..." }}
+                </div>
+            </div>
+            <div>
+                <label class="mc-label">Known Allergies</label>
+                {{ form.allergies|add_class:"mc-input"|attr:"placeholder:e.g. Penicillin, Shellfish..." }}
+            </div>
+            <div>
+                <label class="mc-label">Medical History</label>
+                {{ form.medical_history|add_class:"mc-input"|attr:"placeholder:Previous conditions, surgeries..." }}
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center py-4 mt-4">
+                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

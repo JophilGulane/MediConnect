@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Management — MediConnect Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8 flex items-center justify-between">
+    <div>
+        <a href="/dashboard/admin/" class="text-sm" style="color:#4A6785;"><i
+                class="fa-solid fa-arrow-left mr-1"></i>Admin Home</a>
+        <h1 class="text-3xl font-bold mt-2" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Doctor Management</h1>
+    </div>
+</div>
+
+<div class="mc-card p-6">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left"
+                    style="color:#8FA8C3; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em;">
+                    <th class="pb-3 pr-4">Doctor</th>
+                    <th class="pb-3 pr-4">Specialty</th>
+                    <th class="pb-3 pr-4">License</th>
+                    <th class="pb-3 pr-4">Status</th>
+                    <th class="pb-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in doctors %}
+                <tr class="border-t hover:bg-blue-50 transition-colors" style="border-color:rgba(10,110,189,0.06);">
+                    <td class="py-3 pr-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+                                style="background:linear-gradient(135deg,#0A6EBD,#00C9A7);">{{ doc.user.get_initials }}
+                            </div>
+                            <div>
+                                <p class="font-medium" style="color:#0D1B2A;">{{ doc.user.get_full_name }}</p>
+                                <p class="text-xs" style="color:#8FA8C3;">{{ doc.user.email }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 pr-4" style="color:#4A6785;">{{ doc.get_specialty_display }}</td>
+                    <td class="py-3 pr-4 font-mono text-xs" style="color:#4A6785;">{{ doc.license_number }}</td>
+                    <td class="py-3 pr-4">
+                        {% if doc.is_verified %}
+                        <span class="status-badge badge-active">Approved</span>
+                        {% else %}
+                        <span class="status-badge badge-pending">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-3">
+                        <div class="flex gap-2">
+                            {% if not doc.is_verified %}
+                            <form method="post" action="/dashboard/admin/doctors/{{ doc.pk }}/verify/"
+                                style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-accent text-xs px-3 py-1.5">
+                                    <i class="fa-solid fa-check"></i> Approve
+                                </button>
+                            </form>
+                            {% else %}
+                            <form method="post" action="/dashboard/admin/doctors/{{ doc.pk }}/reject/"
+                                style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-danger text-xs px-3 py-1.5">
+                                    <i class="fa-solid fa-xmark"></i> Revoke
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="py-8 text-center" style="color:#8FA8C3;">No doctors registered yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

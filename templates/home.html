@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% block title %}MediConnect — Healthcare at Your Fingertips{% endblock %}
+{% block main_class %}{% endblock %}
+
+{% block content %}
+
+<!-- ═══ HERO SECTION ═══ -->
+<section class="relative min-h-screen flex items-center overflow-hidden"
+    style="background: linear-gradient(135deg, #064F8C 0%, #0A6EBD 50%, #00C9A7 100%);">
+
+    <!-- Decorative blobs -->
+    <div class="absolute top-0 left-0 w-96 h-96 rounded-full opacity-20"
+        style="background: radial-gradient(ellipse, rgba(255,255,255,0.3), transparent); transform: translate(-30%, -30%);">
+    </div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 rounded-full"
+        style="background: radial-gradient(ellipse, rgba(0,201,167,0.25), transparent); transform: translate(20%, 30%);">
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+            <!-- Left: Text -->
+            <div class="text-white space-y-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+                    style="background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);">
+                    <span class="pulse-dot" style="background: #00C9A7;"></span>
+                    Live Doctors Available Now
+                </div>
+                <h1 class="text-5xl lg:text-6xl font-bold leading-tight" style="font-family:'Sora',sans-serif;">
+                    Healthcare at<br>
+                    <span
+                        style="background: linear-gradient(90deg, #00E5C4, #3B9EE8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;">Your
+                        Fingertips</span>
+                </h1>
+                <p class="text-lg lg:text-xl opacity-80 max-w-md" style="font-family:'DM Sans',sans-serif;">
+                    Connect with licensed doctors in real time. Upload symptom photos, chat live, and receive a digital
+                    prescription — all from home.
+                </p>
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="/accounts/register/patient/" class="btn-accent text-base px-8 py-4">
+                        <i class="fa-solid fa-user-plus"></i> Get Started Free
+                    </a>
+                    <a href="/accounts/login/" class="btn-secondary text-base px-8 py-4"
+                        style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.4); color: #fff;">
+                        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                    </a>
+                </div>
+                <div class="flex items-center gap-6 pt-4 text-sm opacity-70">
+                    <span><i class="fa-solid fa-shield-halved mr-1"></i> HIPAA Compliant</span>
+                    <span><i class="fa-solid fa-lock mr-1"></i> End-to-End Secure</span>
+                    <span><i class="fa-solid fa-certificate mr-1"></i> Licensed Doctors</span>
+                </div>
+            </div>
+
+            <!-- Right: Floating card mockup -->
+            <div class="hidden lg:flex justify-center">
+                <div class="relative">
+                    <!-- Main card -->
+                    <div class="glass-card p-6 w-80 animate-slide-up" style="animation-delay:200ms;">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg"
+                                style="background: linear-gradient(135deg,#0A6EBD,#00C9A7);">DR</div>
+                            <div>
+                                <p class="font-semibold text-gray-800" style="font-family:'Sora',sans-serif;">Dr. Sarah
+                                    Johnson</p>
+                                <p class="text-xs text-gray-500">Cardiologist · ⭐ 4.9</p>
+                            </div>
+                            <span class="status-badge badge-online ml-auto"><span class="pulse-dot"></span>Online</span>
+                        </div>
+                        <div class="space-y-2 text-sm text-gray-600 p-3 rounded-xl mb-4" style="background:#F0F4F9;">
+                            <p>"Patient reports chest tightness for 3 days, no fever…"</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn-accent text-sm px-4 py-2 w-full">Accept Patient</button>
+                        </div>
+                    </div>
+                    <!-- Floating badge 1 -->
+                    <div class="absolute -top-4 -right-4 mc-card px-4 py-2 animate-slide-up"
+                        style="animation-delay:400ms;">
+                        <p class="text-xs text-gray-500">Prescription Ready</p>
+                        <p class="font-bold text-primary-DEFAULT" style="color:#0A6EBD; font-family:'Sora',sans-serif;">
+                            ✓ PDF Generated</p>
+                    </div>
+                    <!-- Floating badge 2 -->
+                    <div class="absolute -bottom-4 -left-6 mc-card px-4 py-2 animate-slide-up"
+                        style="animation-delay:600ms;">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-users text-teal-500"></i>
+                            <div>
+                                <p class="text-xs text-gray-500">Satisfied Patients</p>
+                                <p class="font-bold" style="color:#0D1B2A; font-family:'Sora',sans-serif;">10,000+</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ═══ STATS BAR ═══ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+    <div class="glass-card p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        {% for stat in stats %}
+        <div class="animate-on-scroll">
+            <p class="text-3xl font-bold" style="color:#0A6EBD; font-family:'Sora',sans-serif;">{{ stat.value }}</p>
+            <p class="text-sm mt-1" style="color:#4A6785;">{{ stat.label }}</p>
+        </div>
+        {% empty %}
+        <div class="animate-on-scroll">
+            <p class="text-3xl font-bold" style="color:#0A6EBD; font-family:'Sora',sans-serif;">10K+</p>
+            <p class="text-sm mt-1" style="color:#4A6785;">Patients Served</p>
+        </div>
+        <div class="animate-on-scroll">
+            <p class="text-3xl font-bold" style="color:#0A6EBD; font-family:'Sora',sans-serif;">500+</p>
+            <p class="text-sm mt-1" style="color:#4A6785;">Licensed Doctors</p>
+        </div>
+        <div class="animate-on-scroll">
+            <p class="text-3xl font-bold" style="color:#0A6EBD; font-family:'Sora',sans-serif;">24/7</p>
+            <p class="text-sm mt-1" style="color:#4A6785;">Always Available</p>
+        </div>
+        <div class="animate-on-scroll">
+            <p class="text-3xl font-bold" style="color:#0A6EBD; font-family:'Sora',sans-serif;">98%</p>
+            <p class="text-sm mt-1" style="color:#4A6785;">Satisfaction Rate</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+    <div class="text-center mb-14">
+        <h2 class="text-4xl font-bold mb-3" style="font-family:'Sora',sans-serif; color:#0D1B2A;">How It Works</h2>
+        <p class="text-lg" style="color:#4A6785;">Three simple steps to professional healthcare</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+        {% for step in steps %}
+        <div class="mc-card p-8 text-center animate-on-scroll" data-stagger>
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-6"
+                style="background: linear-gradient(135deg, #0A6EBD, #00C9A7);">
+                <i class="{{ step.icon }}"></i>
+            </div>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold mx-auto mb-4 -mt-2"
+                style="background: #0A6EBD; margin-top: -2rem; margin-left: auto; margin-right: 0;">{{ forloop.counter
+                }}</div>
+            <h3 class="text-xl font-semibold mb-3" style="font-family:'Sora',sans-serif; color:#0D1B2A;">{{ step.title
+                }}</h3>
+            <p style="color:#4A6785; line-height:1.7;">{{ step.description }}</p>
+        </div>
+        {% empty %}
+        <div class="mc-card p-8 text-center animate-on-scroll">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-4"
+                style="background: linear-gradient(135deg, #0A6EBD, #3B9EE8);">
+                <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2" style="font-family:'Sora',sans-serif;">Register & Describe</h3>
+            <p style="color:#4A6785;">Create your patient profile and describe your symptoms in detail.</p>
+        </div>
+        <div class="mc-card p-8 text-center animate-on-scroll" style="animation-delay:100ms;">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-4"
+                style="background: linear-gradient(135deg, #00C9A7, #0A6EBD);">
+                <i class="fa-solid fa-video"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2" style="font-family:'Sora',sans-serif;">Connect Instantly</h3>
+            <p style="color:#4A6785;">Get matched with an available doctor and start your real-time chat consultation.
+            </p>
+        </div>
+        <div class="mc-card p-8 text-center animate-on-scroll" style="animation-delay:200ms;">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl mx-auto mb-4"
+                style="background: linear-gradient(135deg, #00C9A7, #00E5C4);">
+                <i class="fa-solid fa-file-prescription"></i>
+            </div>
+            <h3 class="text-xl font-semibold mb-2" style="font-family:'Sora',sans-serif;">Get Your Prescription</h3>
+            <p style="color:#4A6785;">Receive a digital, downloadable prescription PDF at the end of your session.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ═══ SPECIALTIES ═══ -->
+<section class="py-12" style="background: rgba(10,110,189,0.03);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold text-center mb-8" style="font-family:'Sora',sans-serif;">Browse by Specialty</h2>
+        <div class="flex flex-wrap gap-3 justify-center">
+            {% for label, name in specialties %}
+            <a href="/accounts/register/patient/"
+                class="mc-card px-5 py-3 flex items-center gap-2 text-sm font-medium hover:border-blue-300 no-underline"
+                style="color:#0A6EBD; transition: all 0.25s ease; cursor:pointer;">
+                <i class="fa-solid fa-stethoscope text-teal-500"></i> {{ name }}
+            </a>
+            {% empty %}
+            {% for spec in specialty_list %}
+            <span class="mc-card px-5 py-3 flex items-center gap-2 text-sm font-medium"
+                style="color:#0A6EBD; cursor:pointer;">
+                <i class="fa-solid fa-stethoscope text-teal-500"></i> {{ spec }}
+            </span>
+            {% endfor %}
+            <a href="/accounts/register/patient/"
+                class="mc-card px-5 py-3 flex items-center gap-2 text-sm font-medium hover:shadow-raised no-underline"
+                style="color:#0A6EBD;"><i class="fa-solid fa-stethoscope text-teal-500"></i> Cardiology</a>
+            <a href="/accounts/register/patient/"
+                class="mc-card px-5 py-3 flex items-center gap-2 text-sm font-medium hover:shadow-raised no-underline"
+                style="color:#0A6EBD;"><i class="fa-solid fa-microscope text-teal-500"></i> Dermatology</a>
+            <a href="/accounts/register/patient/"
+                class="mc-card px-5 py-3 flex items-center gap-2 text-sm font-medium hover:shadow-raised no-underline"
+                style="color:#0A6EBD;"><i class="fa-solid fa-brain text-teal-500"></i> Neurology</a>
+            <a href="/accounts/register/patient/"
+                class="mc-card px-5 py-3 flex items-center gap-2 text-sm font-medium hover:shadow-raised no-underline"
+                style="color:#0A6EBD;"><i class="fa-solid fa-baby text-teal-500"></i> Pediatrics</a>
+            <a href="/accounts/register/patient/"
+                class="mc-card px-5 py-3 flex items-center gap-2 text-sm font-medium hover:shadow-raised no-underline"
+                style="color:#0A6EBD;"><i class="fa-solid fa-bone text-teal-500"></i> Orthopedics</a>
+            <a href="/accounts/register/patient/"
+                class="mc-card px-5 py-3 flex items-center gap-2 text-sm font-medium hover:shadow-raised no-underline"
+                style="color:#0A6EBD;"><i class="fa-solid fa-mind-share text-teal-500"></i> Psychiatry</a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+    <h2 class="text-4xl font-bold text-center mb-12" style="font-family:'Sora',sans-serif;">What Patients Say</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+        <div class="mc-card p-7 animate-on-scroll">
+            <div class="flex gap-1 mb-3" style="color:#F5A623;">★★★★★</div>
+            <p class="text-base mb-5 leading-relaxed" style="color:#4A6785;">"Got a prescription within 20 minutes of
+                describing my symptoms. The doctor was incredibly thorough and professional!"</p>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                    style="background: linear-gradient(135deg,#0A6EBD,#00C9A7);">MR</div>
+                <div>
+                    <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">Maria Reyes</p>
+                    <p class="text-xs" style="color:#8FA8C3;">Patient, Manila</p>
+                </div>
+            </div>
+        </div>
+        <div class="mc-card p-7 animate-on-scroll" style="animation-delay:80ms;">
+            <div class="flex gap-1 mb-3" style="color:#F5A623;">★★★★★</div>
+            <p class="text-base mb-5 leading-relaxed" style="color:#4A6785;">"As someone in a rural area, MediConnect
+                has been life-changing. Real doctors, real help, right on my phone."</p>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                    style="background: linear-gradient(135deg,#00C9A7,#0A6EBD);">AL</div>
+                <div>
+                    <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">Alex Lim</p>
+                    <p class="text-xs" style="color:#8FA8C3;">Patient, Cebu</p>
+                </div>
+            </div>
+        </div>
+        <div class="mc-card p-7 animate-on-scroll" style="animation-delay:160ms;">
+            <div class="flex gap-1 mb-3" style="color:#F5A623;">★★★★★</div>
+            <p class="text-base mb-5 leading-relaxed" style="color:#4A6785;">"I sent photos of my skin condition and got
+                a diagnosis in under 30 minutes. The image upload feature is brilliant."</p>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
+                    style="background: linear-gradient(135deg,#F5A623,#FF6B6B);">JG</div>
+                <div>
+                    <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">Jana Garcia</p>
+                    <p class="text-xs" style="color:#8FA8C3;">Patient, Davao</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="mx-4 sm:mx-6 lg:mx-8 mb-16 rounded-3xl overflow-hidden"
+    style="background: linear-gradient(135deg, #064F8C 0%, #0A6EBD 100%);">
+    <div class="max-w-3xl mx-auto text-center px-8 py-16 text-white">
+        <h2 class="text-4xl font-bold mb-4" style="font-family:'Sora',sans-serif;">Ready to speak with a doctor?</h2>
+        <p class="text-lg opacity-75 mb-8">Join thousands of patients who get real healthcare from home, instantly.</p>
+        <a href="/accounts/register/patient/" class="btn-accent text-lg px-10 py-4">
+            <i class="fa-solid fa-stethoscope"></i> Start Your Consultation
+        </a>
+        <p class="mt-4 text-sm opacity-60">Free to register. No subscription required.</p>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MediConnect{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Connect with licensed doctors online for real-time consultations, diagnosis, and digital prescriptions.{% endblock %}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  { DEFAULT: '#0A6EBD', light: '#3B9EE8', dark: '#064F8C' },
+            accent:   { DEFAULT: '#00C9A7', warm: '#FF6B6B', gold: '#F5A623' },
+            surface:  '#F0F4F9',
+          },
+          fontFamily: {
+            display: ['Sora', 'sans-serif'],
+            body:    ['DM Sans', 'sans-serif'],
+          },
+          boxShadow: {
+            'card':   '0 2px 16px rgba(10,110,189,0.08), 0 1px 4px rgba(0,0,0,0.04)',
+            'raised': '0 8px 32px rgba(10,110,189,0.14), 0 2px 8px rgba(0,0,0,0.06)',
+            'glow':   '0 0 24px rgba(0,201,167,0.35)',
+          },
+          animation: {
+            'fade-in':   'fadeIn 0.4s ease-out forwards',
+            'slide-up':  'slideUp 0.4s ease-out forwards',
+            'pulse-dot': 'pulseDot 2s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn:   { from: { opacity: '0' }, to: { opacity: '1' } },
+            slideUp:  { from: { opacity: '0', transform: 'translateY(16px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+            pulseDot: { '0%,100%': { transform: 'scale(1)', opacity: '1' }, '50%': { transform: 'scale(1.4)', opacity: '0.6' } },
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Design System -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/design-system.css' %}">
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="mesh-bg min-h-screen">
+
+  <!-- ══ NAVBAR ══ -->
+  <nav id="main-nav" class="sticky top-0 z-50 animate-fade-in" style="background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(10,110,189,0.1);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 no-underline flex-shrink-0">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white text-base flex-shrink-0"
+             style="background: linear-gradient(135deg, #0A6EBD, #00C9A7);">
+          <i class="fa-solid fa-stethoscope"></i>
+        </div>
+        <span style="font-family:'Sora',sans-serif; font-weight:700; font-size:1.18rem; color:#0D1B2A; white-space:nowrap;">
+          Medi<span style="color:#0A6EBD;">Connect</span>
+        </span>
+      </a>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-2">
+        {% if user.is_authenticated %}
+          <span class="text-sm mr-1" style="color:#8FA8C3;">{{ user.get_full_name|default:user.username }}</span>
+          <a href="/dashboard/" class="sidebar-link py-2 px-4 text-sm"><i class="fa-solid fa-grid-2 icon"></i> Dashboard</a>
+          <a href="/accounts/profile/" class="sidebar-link py-2 px-4 text-sm"><i class="fa-solid fa-user icon"></i> Profile</a>
+          <form method="post" action="/accounts/logout/" style="display:inline;">{% csrf_token %}<button type="submit" class="btn-secondary py-2 px-5 text-sm">Sign Out</button></form>
+        {% else %}
+          <a href="/accounts/login/" class="sidebar-link py-2 px-4 text-sm">Sign In</a>
+          <a href="/accounts/register/patient/" class="btn-primary py-2 px-5 text-sm">Get Started</a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl hover:bg-blue-50 transition-colors" onclick="toggleMobileNav()">
+        <i class="fa-solid fa-bars text-gray-600 text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Mobile dropdown -->
+    <div id="mobile-nav" class="hidden md:hidden px-4 pb-4 space-y-1 border-t pt-3" style="border-color: rgba(10,110,189,0.08);">
+      {% if user.is_authenticated %}
+        <p class="text-xs px-3 pb-1" style="color:#8FA8C3;">{{ user.get_full_name|default:user.username }}</p>
+        <a href="/dashboard/" class="sidebar-link"><i class="fa-solid fa-grid-2 icon"></i> Dashboard</a>
+        <a href="/accounts/profile/" class="sidebar-link"><i class="fa-solid fa-user icon"></i> Profile</a>
+        <form method="post" action="/accounts/logout/">{% csrf_token %}<button type="submit" class="sidebar-link w-full text-left" style="color:#EF4444;"><i class="fa-solid fa-right-from-bracket icon"></i> Sign Out</button></form>
+      {% else %}
+        <a href="/accounts/login/" class="sidebar-link"><i class="fa-solid fa-right-to-bracket icon"></i> Sign In</a>
+        <a href="/accounts/register/patient/" class="sidebar-link"><i class="fa-solid fa-user-plus icon"></i> Register as Patient</a>
+        <a href="/accounts/register/doctor/" class="sidebar-link"><i class="fa-solid fa-user-doctor icon"></i> Register as Doctor</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- ══ FLASH MESSAGES ══ -->
+  {% if messages %}
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-2 animate-fade-in">
+    {% for message in messages %}
+    <div class="flex items-center gap-3 p-4 rounded-2xl text-sm font-medium
+                {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200
+                {% elif message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-200
+                {% elif message.tags == 'warning' %}bg-amber-50 text-amber-700 border border-amber-200
+                {% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
+      <i class="fa-solid {% if message.tags == 'error' %}fa-circle-exclamation{% elif message.tags == 'success' %}fa-circle-check{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-info{% endif %}"></i>
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ══ PAGE CONTENT ══ -->
+  <main class="{% block main_class %}max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  {% block footer %}
+  <footer class="mt-16 border-t py-8" style="background: rgba(255,255,255,0.6); border-color: rgba(10,110,189,0.1);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm" style="color:#8FA8C3;">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs"
+             style="background: linear-gradient(135deg, #0A6EBD, #00C9A7);">
+          <i class="fa-solid fa-stethoscope" style="font-size:10px;"></i>
+        </div>
+        <span style="font-family:'Sora',sans-serif; font-weight:600; color:#0D1B2A;">MediConnect</span>
+      </div>
+      <p>© {% now "Y" %} MediConnect. All rights reserved.</p>
+      <div class="flex gap-4">
+        <a href="#" class="hover:text-blue-500 transition-colors">Privacy</a>
+        <a href="#" class="hover:text-blue-500 transition-colors">Terms</a>
+        <a href="#" class="hover:text-blue-500 transition-colors">Support</a>
+      </div>
+    </div>
+  </footer>
+  {% endblock %}
+
+  <!-- Global JS -->
+  <script>
+    function toggleMobileNav() {
+      document.getElementById('mobile-nav').classList.toggle('hidden');
+    }
+
+    // Animate on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    // Staggered card entrance
+    document.querySelectorAll('[data-stagger]').forEach((el, i) => {
+      el.style.animationDelay = `${i * 80}ms`;
+      el.classList.add('animate-slide-up');
+      el.style.opacity = '0';
+    });
+  </script>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

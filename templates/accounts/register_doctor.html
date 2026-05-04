@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Register as Doctor — MediConnect{% endblock %}
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4">
+    <div class="w-full max-w-2xl">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl mx-auto mb-3"
+                style="background: linear-gradient(135deg, #0A6EBD, #00C9A7);">
+                <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <h1 class="text-3xl font-bold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Register as a Doctor
+            </h1>
+            <p class="mt-2 text-sm" style="color:#4A6785;">Submit your credentials. Admin approval required before
+                accessing the doctor dashboard.</p>
+        </div>
+
+        <div class="mc-card p-8">
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                    {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Personal Info -->
+                <div class="mb-3">
+                    <h3 class="font-semibold text-sm uppercase tracking-wider mb-3"
+                        style="color:#0A6EBD; font-family:'Sora',sans-serif;">
+                        <i class="fa-solid fa-user mr-2"></i>Personal Information
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="mc-label">First Name</label>
+                            {{ form.first_name|add_class:"mc-input"|attr:"placeholder:Dr. First" }}
+                            {% if form.first_name.errors %}<p class="text-red-500 text-xs mt-1">{{
+                                form.first_name.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label class="mc-label">Last Name</label>
+                            {{ form.last_name|add_class:"mc-input"|attr:"placeholder:Last Name" }}
+                            {% if form.last_name.errors %}<p class="text-red-500 text-xs mt-1">{{
+                                form.last_name.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="mc-label">Username</label>
+                            {{ form.username|add_class:"mc-input" }}
+                            {% if form.username.errors %}<p class="text-red-500 text-xs mt-1">{{ form.username.errors.0
+                                }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label class="mc-label">Email</label>
+                            {{ form.email|add_class:"mc-input"|attr:"placeholder:doctor@hospital.com" }}
+                            {% if form.email.errors %}<p class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Info -->
+                <div class="mb-3 p-5 rounded-2xl" style="background:#F0F4F9;">
+                    <h3 class="font-semibold text-sm uppercase tracking-wider mb-4"
+                        style="color:#0A6EBD; font-family:'Sora',sans-serif;">
+                        <i class="fa-solid fa-briefcase-medical mr-2"></i>Professional Credentials
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="mc-label">Specialty</label>
+                            {{ form.specialty|add_class:"mc-select" }}
+                            {% if form.specialty.errors %}<p class="text-red-500 text-xs mt-1">{{
+                                form.specialty.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label class="mc-label">Years of Experience</label>
+                            {{ form.years_of_experience|add_class:"mc-input"|attr:"placeholder:5" }}
+                            {% if form.years_of_experience.errors %}<p class="text-red-500 text-xs mt-1">{{
+                                form.years_of_experience.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="mc-label">Medical License Number</label>
+                        {{ form.license_number|add_class:"mc-input"|attr:"placeholder:e.g. PRC-123456" }}
+                        {% if form.license_number.errors %}<p class="text-red-500 text-xs mt-1">{{
+                            form.license_number.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="mc-label">Professional Bio (optional)</label>
+                        {{ form.bio|add_class:"mc-input"|attr:"placeholder:Briefly describe your expertise and
+                        experience..." }}
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="mc-label">Password</label>
+                        {{ form.password1|add_class:"mc-input"|attr:"placeholder:••••••••" }}
+                        {% if form.password1.errors %}<p class="text-red-500 text-xs mt-1">{{ form.password1.errors.0 }}
+                        </p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="mc-label">Confirm Password</label>
+                        {{ form.password2|add_class:"mc-input"|attr:"placeholder:••••••••" }}
+                        {% if form.password2.errors %}<p class="text-red-500 text-xs mt-1">{{ form.password2.errors.0 }}
+                        </p>{% endif %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary w-full justify-center py-4 text-base mt-2">
+                    <i class="fa-solid fa-paper-plane"></i> Submit for Approval
+                </button>
+            </form>
+
+            <p class="text-center mt-6 text-sm" style="color:#4A6785;">
+                Already registered? <a href="/accounts/login/" style="color:#0A6EBD; font-weight:600;">Sign In</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
