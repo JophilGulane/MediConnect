@@ -45,6 +45,14 @@ class DoctorRegistrationForm(UserCreationForm):
             'password1', 'password2'
         ]
 
+    def clean_license_number(self):
+        license_number = self.cleaned_data.get('license_number', '').strip()
+        if DoctorProfile.objects.filter(license_number=license_number).exists():
+            raise forms.ValidationError(
+                'A doctor with this license number is already registered.'
+            )
+        return license_number
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.role = 'doctor'

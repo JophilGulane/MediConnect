@@ -18,14 +18,14 @@ from consultations.forms import NewConsultationForm
 def home(request):
     """Redirect to the appropriate dashboard based on user role."""
     user = request.user
-    if user.is_patient():
+    if user.is_superuser or user.is_admin_user():
+        return redirect('dashboard:admin_home')
+    elif user.is_patient():
         return redirect('dashboard:patient_home')
     elif user.is_doctor():
         if not user.doctorprofile.is_verified:
             return redirect('accounts:doctor_pending')
         return redirect('dashboard:doctor_home')
-    elif user.is_admin_user():
-        return redirect('dashboard:admin_home')
     return redirect('dashboard:landing')
 
 

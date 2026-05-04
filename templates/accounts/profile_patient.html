@@ -22,11 +22,9 @@
                 {% endif %}
             </div>
             <div>
-                <p class="text-xl font-bold" style="font-family:'Sora',sans-serif;">{{
-                    request.user.get_full_name|default:request.user.username }}</p>
+                <p class="text-xl font-bold" style="font-family:'Sora',sans-serif;">{{ request.user.get_full_name|default:request.user.username }}</p>
                 <p class="text-sm" style="color:#4A6785;">Patient</p>
-                <p class="text-xs mt-1" style="color:#8FA8C3;">Member since {{ request.user.date_joined|date:"F Y" }}
-                </p>
+                <p class="text-xs mt-1" style="color:#8FA8C3;">Member since {{ request.user.date_joined|date:"F Y" }}</p>
             </div>
         </div>
 
