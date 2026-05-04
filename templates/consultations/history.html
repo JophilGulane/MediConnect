@@ -30,8 +30,7 @@
                 <tr class="border-t hover:bg-blue-50 transition-colors" style="border-color:rgba(10,110,189,0.06);">
                     <td class="py-3 pr-4 text-xs" style="color:#8FA8C3;">#{{ c.pk }}</td>
                     <td class="py-3 pr-4 font-medium" style="color:#0D1B2A;">
-                        {% if view_as == 'doctor' %}{{ c.patient.get_full_name }}{% else %}Dr. {{ c.doctor.get_full_name
-                        }}{% endif %}
+                        {% if view_as == 'doctor' %}{{ c.patient.get_full_name }}{% else %}Dr. {{ c.doctor.get_full_name }}{% endif %}
                     </td>
                     <td class="py-3 pr-4 text-xs" style="color:#4A6785;">{{ c.created_at|date:"M j, Y" }}</td>
                     <td class="py-3 pr-4">
@@ -66,8 +65,7 @@
         {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}" class="btn-secondary px-4 py-2 text-sm">← Prev</a>
         {% endif %}
-        <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{
-            page_obj.paginator.num_pages }}</span>
+        <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
         {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}" class="btn-secondary px-4 py-2 text-sm">Next →</a>
         {% endif %}

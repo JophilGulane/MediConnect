@@ -20,11 +20,12 @@
                 <select name="doctor" class="mc-select" required>
                     <option value="">— Choose an available doctor —</option>
                     {% for doc in doctors %}
-                    <option value="{{ doc.user.pk }}" {% if preselect_doctor==doc.user.pk|stringformat:"s" %}selected{%
-                        endif %}>
+                    {% with doc_pk=doc.user.pk|stringformat:"s" %}
+                    <option value="{{ doc.user.pk }}" {% if preselect_doctor == doc_pk %}selected{% endif %}>
                         Dr. {{ doc.user.get_full_name }} — {{ doc.get_specialty_display }}
                         {% if doc.availability_status == 'online' %}(Online){% endif %}
                     </option>
+                    {% endwith %}
                     {% empty %}
                     <option value="" disabled>No doctors online right now</option>
                     {% endfor %}

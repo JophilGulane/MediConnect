@@ -15,7 +15,7 @@
             <select name="specialty" class="mc-select">
                 <option value="">All Specialties</option>
                 {% for val, label in specialty_choices %}
-                <option value="{{ val }}" {% if specialty_filter==val %}selected{% endif %}>{{ label }}</option>
+                <option value="{{ val }}" {% if specialty_filter == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -23,9 +23,9 @@
             <label class="mc-label">Availability</label>
             <select name="status" class="mc-select">
                 <option value="">Any Status</option>
-                <option value="online" {% if status_filter=='online' %}selected{% endif %}>Online</option>
-                <option value="busy" {% if status_filter=='busy' %}selected{% endif %}>Busy</option>
-                <option value="offline" {% if status_filter=='offline' %}selected{% endif %}>Offline</option>
+                <option value="online" {% if status_filter == 'online' %}selected{% endif %}>Online</option>
+                <option value="busy" {% if status_filter == 'busy' %}selected{% endif %}>Busy</option>
+                <option value="offline" {% if status_filter == 'offline' %}selected{% endif %}>Offline</option>
             </select>
         </div>
         <button type="submit" class="btn-primary px-6 py-3">
@@ -100,8 +100,7 @@
     <a href="?page={{ page_obj.previous_page_number }}&specialty={{ specialty_filter }}&status={{ status_filter }}"
         class="btn-secondary px-4 py-2 text-sm">← Prev</a>
     {% endif %}
-    <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{
-        page_obj.paginator.num_pages }}</span>
+    <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
     {% if page_obj.has_next %}
     <a href="?page={{ page_obj.next_page_number }}&specialty={{ specialty_filter }}&status={{ status_filter }}"
         class="btn-secondary px-4 py-2 text-sm">Next →</a>

@@ -29,7 +29,7 @@ def consultation_room(request, pk):
 
     context = {
         'consultation': consultation,
-        'messages': messages_qs,
+        'chat_messages': messages_qs,
         'images': images,
         'is_doctor': request.user.is_doctor(),
         'other_party': consultation.patient if request.user.is_doctor() else consultation.doctor,

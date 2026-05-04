@@ -114,7 +114,7 @@ class ConsultationViewTest(TestCase):
     def test_end_consultation_by_doctor(self):
         self.client.login(username='d', password='pw')
         resp = self.client.post(
-            reverse('consultations:end_consultation', args=[self.consultation.pk])
+            reverse('consultations:end', args=[self.consultation.pk])
         )
         self.assertEqual(resp.status_code, 302)  # Redirect to create prescription
         self.consultation.refresh_from_db()

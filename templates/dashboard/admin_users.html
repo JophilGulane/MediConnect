@@ -66,8 +66,7 @@
         {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}" class="btn-secondary px-4 py-2 text-sm">← Prev</a>
         {% endif %}
-        <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{
-            page_obj.paginator.num_pages }}</span>
+        <span class="mc-card px-4 py-2 text-sm flex items-center">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
         {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}" class="btn-secondary px-4 py-2 text-sm">Next →</a>
         {% endif %}

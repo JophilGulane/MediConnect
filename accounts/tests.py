@@ -108,6 +108,7 @@ class RegistrationViewTest(TestCase):
             'password2': 'Str0ngPass!23',
             'specialty': 'general',
             'license_number': 'LIC-12345',
+            'years_of_experience': 5,
         })
         self.assertEqual(resp.status_code, 302)
         user = User.objects.get(username='newdoctor')

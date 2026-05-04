@@ -7,8 +7,7 @@
         <div>
             <a href="/dashboard/" class="text-sm" style="color:#4A6785;"><i
                     class="fa-solid fa-arrow-left mr-1"></i>Dashboard</a>
-            <h1 class="text-3xl font-bold mt-2" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Digital
-                Prescription</h1>
+            <h1 class="text-3xl font-bold mt-2" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Digital Prescription</h1>
         </div>
     </div>
 
@@ -45,24 +44,17 @@
                 <!-- Doctor & Patient Info -->
                 <div class="grid sm:grid-cols-2 gap-4 mb-6">
                     <div class="p-4 rounded-2xl" style="background:#EFF6FF;">
-                        <p class="text-xs uppercase font-semibold tracking-wider mb-2" style="color:#0A6EBD;">
-                            Prescribing Doctor</p>
-                        <p class="font-semibold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Dr. {{
-                            prescription.doctor.get_full_name }}</p>
+                        <p class="text-xs uppercase font-semibold tracking-wider mb-2" style="color:#0A6EBD;">Prescribing Doctor</p>
+                        <p class="font-semibold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">Dr. {{ prescription.doctor.get_full_name }}</p>
                         {% if prescription.doctor.doctorprofile %}
-                        <p class="text-xs mt-1" style="color:#4A6785;">{{
-                            prescription.doctor.doctorprofile.get_specialty_display }}</p>
-                        <p class="text-xs" style="color:#4A6785;">Lic. No: {{
-                            prescription.doctor.doctorprofile.license_number }}</p>
+                        <p class="text-xs mt-1" style="color:#4A6785;">{{ prescription.doctor.doctorprofile.get_specialty_display }}</p>
+                        <p class="text-xs" style="color:#4A6785;">Lic. No: {{ prescription.doctor.doctorprofile.license_number }}</p>
                         {% endif %}
                     </div>
                     <div class="p-4 rounded-2xl" style="background:#F0F4F9;">
-                        <p class="text-xs uppercase font-semibold tracking-wider mb-2" style="color:#4A6785;">Patient
-                        </p>
-                        <p class="font-semibold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">{{
-                            prescription.patient.get_full_name }}</p>
-                        <p class="text-xs mt-1" style="color:#4A6785;">Date Issued: {{ prescription.issued_at|date:"F j,
-                            Y" }}</p>
+                        <p class="text-xs uppercase font-semibold tracking-wider mb-2" style="color:#4A6785;">Patient</p>
+                        <p class="font-semibold" style="font-family:'Sora',sans-serif; color:#0D1B2A;">{{ prescription.patient.get_full_name }}</p>
+                        <p class="text-xs mt-1" style="color:#4A6785;">Date Issued: {{ prescription.issued_at|date:"F j, Y" }}</p>
                     </div>
                 </div>
 
@@ -120,8 +112,7 @@
                     <div class="w-48 border-b-2 mb-1" style="border-color:#0A6EBD;"></div>
                     <p class="text-xs" style="color:#4A6785;">Dr. {{ prescription.doctor.get_full_name }}</p>
                     {% if prescription.doctor.doctorprofile %}
-                    <p class="text-xs" style="color:#8FA8C3;">{{ prescription.doctor.doctorprofile.get_specialty_display
-                        }}</p>
+                    <p class="text-xs" style="color:#8FA8C3;">{{ prescription.doctor.doctorprofile.get_specialty_display }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -142,14 +133,10 @@
                 <h4 class="font-semibold text-sm mb-3" style="font-family:'Sora',sans-serif; color:#0D1B2A;">
                     Consultation Summary</h4>
                 <div class="space-y-2 text-xs" style="color:#4A6785;">
-                    <p><i class="fa-solid fa-hashtag w-4 mr-1" style="color:#0A6EBD;"></i>Consultation #{{
-                        prescription.consultation.pk }}</p>
-                    <p><i class="fa-solid fa-calendar w-4 mr-1" style="color:#0A6EBD;"></i>{{
-                        prescription.issued_at|date:"F j, Y" }}</p>
-                    <p><i class="fa-solid fa-user-doctor w-4 mr-1" style="color:#0A6EBD;"></i>Dr. {{
-                        prescription.doctor.get_full_name }}</p>
-                    <p><i class="fa-solid fa-user w-4 mr-1" style="color:#0A6EBD;"></i>{{
-                        prescription.patient.get_full_name }}</p>
+                    <p><i class="fa-solid fa-hashtag w-4 mr-1" style="color:#0A6EBD;"></i>Consultation #{{ prescription.consultation.pk }}</p>
+                    <p><i class="fa-solid fa-calendar w-4 mr-1" style="color:#0A6EBD;"></i>{{ prescription.issued_at|date:"F j, Y" }}</p>
+                    <p><i class="fa-solid fa-user-doctor w-4 mr-1" style="color:#0A6EBD;"></i>Dr. {{ prescription.doctor.get_full_name }}</p>
+                    <p><i class="fa-solid fa-user w-4 mr-1" style="color:#0A6EBD;"></i>{{ prescription.patient.get_full_name }}</p>
                 </div>
             </div>
 

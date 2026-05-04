@@ -49,8 +49,7 @@
             style="background: linear-gradient(135deg,#00C9A7,#0A6EBD);">{{ active_consultation.patient.get_initials }}
         </div>
         <div>
-            <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">Active Session: {{
-                active_consultation.patient.get_full_name }}</p>
+            <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">Active Session: {{ active_consultation.patient.get_full_name }}</p>
             <p class="text-xs" style="color:#4A6785;">Started {{ active_consultation.started_at|timesince }} ago</p>
         </div>
     </div>
@@ -75,9 +74,8 @@
         </p>
         <form method="post" action="/dashboard/doctor/accept/">
             {% csrf_token %}
-            <button type="submit" class="btn-accent w-full justify-center py-4 text-base
-                                   {% if stats.queue_count == 0 %}opacity-50 cursor-not-allowed{% endif %}" {% if
-                stats.queue_count==0 %}disabled{% endif %}>
+            <button type="submit" {% if stats.queue_count == 0 %}disabled{% endif %}
+                class="btn-accent w-full justify-center py-4 text-base {% if stats.queue_count == 0 %}opacity-50 cursor-not-allowed{% endif %}">
                 <i class="fa-solid fa-stethoscope"></i>
                 {% if stats.queue_count > 0 %}Accept Next Patient{% else %}No Patients Waiting{% endif %}
             </button>
@@ -120,12 +118,9 @@
             <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 text-sm"
                 style="background: linear-gradient(135deg,#0A6EBD,#00C9A7);">{{ c.patient.get_initials }}</div>
             <div class="flex-1 min-w-0">
-                <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">{{ c.patient.get_full_name }}
-                </p>
-                <p class="text-xs mt-1 truncate" style="color:#4A6785;">{{ c.symptoms_description|truncatechars:80 }}
-                </p>
-                <p class="text-xs mt-1" style="color:#8FA8C3;"><i class="fa-regular fa-clock mr-1"></i>{{
-                    c.created_at|timesince }} ago</p>
+                <p class="font-semibold text-sm" style="font-family:'Sora',sans-serif;">{{ c.patient.get_full_name }}</p>
+                <p class="text-xs mt-1 truncate" style="color:#4A6785;">{{ c.symptoms_description|truncatechars:80 }}</p>
+                <p class="text-xs mt-1" style="color:#8FA8C3;"><i class="fa-regular fa-clock mr-1"></i>{{ c.created_at|timesince }} ago</p>
             </div>
             <span class="status-badge badge-pending text-xs flex-shrink-0">Pending</span>
         </div>
