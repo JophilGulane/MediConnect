@@ -217,9 +217,3 @@ python manage.py runserver
 * **Multi-language Support** — Add Filipino (Tagalog) and Cuyonon language support for broader accessibility
 * **Rating & Review System** — Allow patients to rate doctors after completed consultations
 * **Analytics Dashboard** — Enhanced admin reporting with charts for consultation trends and doctor performance
-
----
-
-> Before submitting make sure you have completed the Repository Submission Checklist
-> in the Project Submission Guide.
-> [Project Submission Guide](https://github.com/PSU-CS-Academic-Projects/.github/blob/main/PROJECT_SUBMISSION_GUIDE.md)
