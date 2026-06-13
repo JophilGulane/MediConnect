@@ -153,45 +153,125 @@ python manage.py runserver
 
 > Screenshots are located inside the `screenshots/` folder.
 
+---
+
+### Public Pages
+
 **Home / Landing Page**
+> The main landing page introducing MediConnect with a hero section, how-it-works steps, and call-to-action buttons for patients and doctors.
 
 ![Home Page](screenshots/home.png)
 
+**Login Page**
+> Unified login page for patients, doctors, and admins.
+
+![Login](screenshots/login.png)
+
+---
+
+### Registration
+
 **Patient Registration**
+> Form for new patients to create an account with name, email, username, phone, and password.
 
 ![Patient Registration](screenshots/register_patient.png)
 
 **Doctor Registration**
+> Form for doctors to register with credentials including specialty, years of experience, license number, and professional bio. Account is pending until admin approval.
 
 ![Doctor Registration](screenshots/register_doctor.png)
 
-**Admin Dashboard**
+---
 
-![Admin Dashboard](screenshots/admin_dashboard.png)
-
-**Doctor Approval Management**
-
-![Doctor Management](screenshots/admin_doctors.png)
+### Patient Pages
 
 **Patient Dashboard**
+> Overview of the patient's active consultations, quick actions to browse doctors or start a new consultation, and recent activity.
 
 ![Patient Dashboard](screenshots/patient_dashboard.png)
 
 **Browse Doctors**
+> Directory of all verified and available doctors. Patients can filter by specialty and availability status to find the right doctor.
 
 ![Browse Doctors](screenshots/browse_doctors.png)
 
-**Consultation Room (Real-Time Chat)**
+**New Consultation Form**
+> Form where the patient selects a doctor, describes their symptoms, and optionally attaches images before submitting a consultation request.
 
-![Consultation Room](screenshots/consultation_room.png)
+![New Consultation](screenshots/new_consultation.png)
+
+**Consultation Room — Patient View (Real-Time Chat)**
+> The live chat interface where patients and doctors communicate in real time via WebSockets. Patients can type messages and attach symptom images.
+
+![Consultation Room Patient](screenshots/consultation_room_patient.png)
+
+**Consultation History — Patient**
+> A paginated list of all past and current consultations, showing status badges (Pending, Active, Completed) and links to view prescriptions.
+
+![Patient History](screenshots/patient_history.png)
+
+**View Prescription**
+> The digital prescription page a patient receives after a completed consultation, showing prescribed medicines, dosage, frequency, duration, doctor's notes, and patient instructions.
+
+![Prescription Detail](screenshots/prescription_detail.png)
+
+**Patient Profile**
+> Patient account settings page where personal details (name, phone), health info (blood type, allergies, medical history), and profile picture can be updated.
+
+![Patient Profile](screenshots/patient_profile.png)
+
+---
+
+### Doctor Pages
 
 **Doctor Dashboard**
+> Doctor's home screen showing their availability status toggle (Online / Busy / Offline), the live patient queue count, an accept-next-patient button, and today's consultation stats.
 
 ![Doctor Dashboard](screenshots/doctor_dashboard.png)
 
-**Digital Prescription**
+**Consultation Room — Doctor View (Real-Time Chat)**
+> The chat interface from the doctor's perspective, with patient medical history visible in the side panel and an End Consultation button to close the session.
 
-![Prescription](screenshots/prescription.png)
+![Consultation Room Doctor](screenshots/consultation_room_doctor.png)
+
+**Write Prescription**
+> Form where the doctor fills in prescribed medicines, dosage, frequency, duration, clinical notes, and patient instructions at the end of a consultation.
+
+![Write Prescription](screenshots/write_prescription.png)
+
+**Prescription Output**
+> The finalized prescription document view showing the clinic header, patient and doctor details, medicine table, and signature line — ready for download as PDF.
+
+![Prescription Output](screenshots/prescription_output.png)
+
+**Consultation History — Doctor**
+> Doctor's full list of past consultations with patient names, statuses, and links to previously written prescriptions.
+
+![Doctor History](screenshots/doctor_history.png)
+
+**Doctor Profile**
+> Doctor account settings page for updating personal info, specialty, years of experience, bio, and profile picture.
+
+![Doctor Profile](screenshots/doctor_profile.png)
+
+---
+
+### Admin Pages
+
+**Admin Dashboard**
+> Platform-wide overview with summary statistics: total patients, total doctors, pending approvals, and active consultations. Includes a quick-access list of doctors awaiting approval.
+
+![Admin Dashboard](screenshots/admin_dashboard.png)
+
+**Doctor Approval Management**
+> Admin page listing all registered doctors with their specialty, license number, and verification status. Admins can approve or reject pending doctor accounts.
+
+![Doctor Management](screenshots/admin_doctors.png)
+
+**User Management**
+> Admin page showing all registered users (patients, doctors, admins) with role badges, email, join date, and active status.
+
+![User Management](screenshots/admin_users.png)
 
 ---
 
