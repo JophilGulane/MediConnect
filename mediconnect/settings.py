@@ -20,7 +20,13 @@ ALLOWED_HOSTS += ['.railway.app']  # covers all Railway subdomains
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
+    'https://mediconnectpsu.up.railway.app',
 ]
+
+# Railway runs behind a reverse proxy that terminates SSL
+# These tell Django to trust the forwarded headers
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
 
 INSTALLED_APPS = [
     'daphne',
@@ -134,6 +140,9 @@ MAX_UPLOAD_SIZE_MB = int(os.environ.get('MAX_UPLOAD_SIZE_MB', 5))
 
 # Production security (loaded from env)
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    # DO NOT set SECURE_SSL_REDIRECT — Railway's proxy already handles SSL
+    # Turning it on here causes CSRF token origin mismatches
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
